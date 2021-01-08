@@ -1,6 +1,3 @@
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\TesteGraph.exe.config
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\TesteGraph.exe
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\TesteGraph.pdb
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\ZedGraph.dll
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\ZedGraph.xml
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\de\ZedGraph.resources.dll
@@ -19,9 +16,12 @@ C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantS
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.csprojAssemblyReference.cache
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.Form1.resources
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.FormDevicesConnection.resources
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\TesteGraph.Properties.Resources.resources
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.csproj.GenerateResource.cache
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.csproj.CoreCompileInputs.cache
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.csproj.CopyComplete
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\TesteGraph.exe
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\TesteGraph.pdb
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\PlantSimulator.exe.config
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\PlantSimulator.exe
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\bin\Debug\PlantSimulator.pdb
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.Properties.Resources.resources
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.exe
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator\PlantSimulator\obj\Debug\PlantSimulator.pdb

@@ -14,6 +14,7 @@ namespace PlantSimulator
             double tau;
             double a;
             double step;
+            double initialPoint = 0;
 
 
             public PrimeiraOrdem(string stringGain, string stringTau, string stringSignal, string stringA, decimal stepValue)
@@ -23,9 +24,23 @@ namespace PlantSimulator
                 this.a = double.Parse(stringSignal + stringA);
                 this.step = (double)stepValue;
             }
-            public double RespostaFuncaoPrimeiraOrdem (double time)
+            public double RespostaFuncaoPrimeiraOrdem(double time)
             {
-                return this.step*(((this.gain / this.a) * (1 - Math.Exp(-(this.a * time) / this.tau))) / this.tau);
+                return (this.step * (((this.gain / this.a) * (1 - Math.Exp(-(this.a * time) / this.tau))) / this.tau)) + this.initialPoint;
+            }
+
+            public void SetStep(decimal stepValue)
+            {
+                this.step = (double)stepValue;
+            }
+            public double GetStep()
+            {
+                return this.step;
+            }
+
+            public void SetInitialPoint(double initialPointValue)
+            {
+                this.initialPoint = initialPointValue;
             }
 
 

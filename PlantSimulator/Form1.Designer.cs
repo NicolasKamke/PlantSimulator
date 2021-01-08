@@ -64,8 +64,8 @@ namespace PlantSimulator
             // 
             // zedGraph
             // 
-            this.zedGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.zedGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.zedGraph.Location = new System.Drawing.Point(12, 144);
             this.zedGraph.Name = "zedGraph";
@@ -76,7 +76,7 @@ namespace PlantSimulator
             this.zedGraph.ScrollMinX = 0D;
             this.zedGraph.ScrollMinY = 0D;
             this.zedGraph.ScrollMinY2 = 0D;
-            this.zedGraph.Size = new System.Drawing.Size(464, 292);
+            this.zedGraph.Size = new System.Drawing.Size(462, 292);
             this.zedGraph.TabIndex = 0;
             this.zedGraph.UseExtendedPrintDialog = true;
             // 
@@ -339,7 +339,7 @@ namespace PlantSimulator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 454);
+            this.ClientSize = new System.Drawing.Size(483, 454);
             this.Controls.Add(this.btnConnectionPage);
             this.Controls.Add(this.grpCommand);
             this.Controls.Add(this.groupBox1);

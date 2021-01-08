@@ -14,7 +14,7 @@ namespace PlantSimulator
 {
     public partial class Form1 : Form
     {
-        FormDevicesConnection DevicesConnectionPage = new FormDevicesConnection();
+
 
         GraphPane myPaneGraph = new GraphPane();
 
@@ -22,13 +22,13 @@ namespace PlantSimulator
 
         LineItem myCurveGraph;
 
-        bool controlLoopTask;     
+        bool controlLoopTask;
 
         public Form1()
         {
             InitializeComponent();
 
-            grpPrimeiraOrdem.Visible = false;      
+            grpPrimeiraOrdem.Visible = false;
             btnStart.Visible = false;
             btnStop.Visible = false;
             zedGraph.Visible = false;
@@ -47,7 +47,7 @@ namespace PlantSimulator
 
             myPaneGraph.YAxis.Title.Text = "C(t)";
 
-            myPaneGraph.YAxis.Scale.Min = 0;          
+            myPaneGraph.YAxis.Scale.Min = 0;
 
             myCurveGraph = myPaneGraph.AddCurve(null, listPoint, Color.Red, SymbolType.None);
 
@@ -57,7 +57,7 @@ namespace PlantSimulator
         }
 
         private void cbxSitema_SelectedIndexChanged(object sender, EventArgs e)
-        {         
+        {
             btnStart.Visible = true;
             grpCommand.Visible = true;
 
@@ -66,14 +66,14 @@ namespace PlantSimulator
                 grpPrimeiraOrdem.Visible = true;
             }
 
-        }       
+        }
 
         private void btnStart_Click(object sender, EventArgs e)
-        {            
+        {
             Task.Run(() => ContinuousSampling());
             btnStart.Visible = false;
             btnStop.Visible = true;
-            updownStep.Enabled = false;
+            //updownStep.Enabled = false;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -82,12 +82,13 @@ namespace PlantSimulator
             btnStart.Visible = true;
             btnStop.Visible = false;
             updownStep.Enabled = true;
-            
+
         }
 
         public void ContinuousSampling()
         {
             controlLoopTask = true;
+            double degrauAntigo = (double)updownStep.Value;
 
             Sistema.PrimeiraOrdem sistemaPrimeiraOrdem = new Sistema.PrimeiraOrdem(txtGain.Text, txtTau.Text, txtSignal.Text, txtA.Text, updownStep.Value);
 
@@ -96,15 +97,26 @@ namespace PlantSimulator
 
             this.zedGraph.Invoke((MethodInvoker)delegate
             {
-                zedGraph.Visible = true;                
+                zedGraph.Visible = true;
 
             });
-            
+
             double samplingTime = 0;
+
 
             while (controlLoopTask)
             {
-               
+
+                if ((double)updownStep.Value != degrauAntigo)
+                {
+                    decimal newStep = updownStep.Value - (decimal)degrauAntigo;
+                    sistemaPrimeiraOrdem.SetInitialPoint(sistemaPrimeiraOrdem.RespostaFuncaoPrimeiraOrdem(samplingTime));                  
+                    sistemaPrimeiraOrdem.SetStep(newStep);
+                    degrauAntigo = (double)updownStep.Value;
+                    listPoint.Clear();
+                    samplingTime = 0;
+
+                }
 
                 listPoint.Add(new PointPair(samplingTime, sistemaPrimeiraOrdem.RespostaFuncaoPrimeiraOrdem(samplingTime)));
                 myPaneGraph.XAxis.Scale.Max = samplingTime;
@@ -113,7 +125,7 @@ namespace PlantSimulator
 
                 this.zedGraph.Invoke((MethodInvoker)delegate
                 {
-                    zedGraph.Refresh();                   
+                    zedGraph.Refresh();
 
                 });
 
@@ -127,7 +139,7 @@ namespace PlantSimulator
         private void btnConnectionPage_Click_1(object sender, EventArgs e)
         {
 
-            
+            FormDevicesConnection DevicesConnectionPage = new FormDevicesConnection();
             DevicesConnectionPage.Show();
 
         }
