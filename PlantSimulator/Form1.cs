@@ -14,8 +14,6 @@ namespace PlantSimulator
 {
     public partial class Form1 : Form
     {
-
-
         GraphPane myPaneGraph = new GraphPane();
 
         PointPairList listPoint = new PointPairList();
@@ -23,18 +21,21 @@ namespace PlantSimulator
         LineItem myCurveGraph;
 
         bool controlLoopTask;
+        bool newStepInGraph = false;
+        double degrauAntigo;
+        double samplingTime = 0;
+
 
         public Form1()
         {
             InitializeComponent();
-
-            grpPrimeiraOrdem.Visible = false;
-            btnStart.Visible = false;
-            btnStop.Visible = false;
-            zedGraph.Visible = false;
-            grpCommand.Visible = false;
-
             ConfigureGraph();
+
+            grpSistemas.Visible = false;
+            grpCommand.Visible = false;
+            grpParameters.Visible = false;
+            btnStep.Visible = false;
+              
         }
 
         public void ConfigureGraph()
@@ -45,76 +46,99 @@ namespace PlantSimulator
 
             myPaneGraph.XAxis.Title.Text = "t(s)";
 
-            myPaneGraph.YAxis.Title.Text = "C(t)";
-
-            myPaneGraph.YAxis.Scale.Min = 0;
+            myPaneGraph.YAxis.Title.Text = "C(t)";            
 
             myCurveGraph = myPaneGraph.AddCurve(null, listPoint, Color.Red, SymbolType.None);
 
             myCurveGraph.Line.Width = 3;
 
+        }
 
+        public void CalculaParametrosPrimeiraOrdem()
+        {
+            txtT.Text = txtTau.Text;
+            txtTE.Text = (2.2 / Double.Parse(txtA.Text)).ToString();
+            txtTS.Text = (4 / Double.Parse(txtA.Text)).ToString();
         }
 
         private void cbxSitema_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            btnStart.Visible = true;
+        {            
             grpCommand.Visible = true;
+            grpSistemas.Visible = true;
+            grpParameters.Visible = true;
 
-            if (cbxSitema.SelectedIndex == 0)
+            switch (cbxSitema.SelectedIndex)
             {
-                grpPrimeiraOrdem.Visible = true;
-            }
+                case 0:
+                    grpPrimeiraOrdem.Visible = true;
+                    grpSegundaOrdem.Visible = false;
+                    grpParametrosPrimeiraOrdem.Visible = true;
+                    break;
+
+                case 1:
+                    grpPrimeiraOrdem.Visible = false;
+                    grpSegundaOrdem.Visible = true;
+                    grpParametrosPrimeiraOrdem.Visible = false;
+                    break;
+            }           
 
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
             Task.Run(() => ContinuousSampling());
-            btnStart.Visible = false;
-            btnStop.Visible = true;
-            //updownStep.Enabled = false;
+            CalculaParametrosPrimeiraOrdem();
+            grpSistemas.Enabled = false;
+            btnStep.Visible = true;
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
             controlLoopTask = false;
+            grpSistemas.Enabled = true;
+            btnStep.Visible = false;
             btnStart.Visible = true;
-            btnStop.Visible = false;
-            updownStep.Enabled = true;
+        }
+
+        private void btnStep_Click(object sender, EventArgs e)
+        {
+            newStepInGraph = true;
+            
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            listPoint.Clear();
+            myPaneGraph.XAxis.Scale.Min = samplingTime;
+          
+            //myPaneGraph.YAxis.Scale.Max = degrauAntigo+5;
+            //zedGraph.RestoreScale(myPaneGraph);
+
 
         }
 
         public void ContinuousSampling()
         {
+            samplingTime = 0;
             controlLoopTask = true;
-            double degrauAntigo = (double)updownStep.Value;
+            degrauAntigo = Convert.ToDouble(txtStep.Text);
 
-            Sistema.PrimeiraOrdem sistemaPrimeiraOrdem = new Sistema.PrimeiraOrdem(txtGain.Text, txtTau.Text, txtSignal.Text, txtA.Text, updownStep.Value);
+            Sistema.PrimeiraOrdem sistemaPrimeiraOrdem = new Sistema.PrimeiraOrdem(txtGain.Text, txtTau.Text, txtSignal.Text, txtA.Text, Convert.ToDecimal(txtStep.Text));
 
             listPoint.Clear();
             ConfigureGraph();
 
-            this.zedGraph.Invoke((MethodInvoker)delegate
-            {
-                zedGraph.Visible = true;
-
-            });
-
-            double samplingTime = 0;
-
-
             while (controlLoopTask)
             {
 
-                if ((double)updownStep.Value != degrauAntigo)
+                if (newStepInGraph)
                 {
-                    decimal newStep = updownStep.Value - (decimal)degrauAntigo;
-                    sistemaPrimeiraOrdem.SetInitialPoint(sistemaPrimeiraOrdem.RespostaFuncaoPrimeiraOrdem(samplingTime));                  
+                    decimal newStep = Convert.ToDecimal(txtStep.Text) - (decimal)degrauAntigo;
+                    sistemaPrimeiraOrdem.SetInitialPoint(sistemaPrimeiraOrdem.RespostaFuncaoPrimeiraOrdem(samplingTime));
                     sistemaPrimeiraOrdem.SetStep(newStep);
-                    degrauAntigo = (double)updownStep.Value;
-                    listPoint.Clear();
-                    samplingTime = 0;
+                    sistemaPrimeiraOrdem.SetInitialStepTime(samplingTime);
+                    degrauAntigo = Convert.ToDouble(txtStep.Text);
+                    newStepInGraph = false;                 
 
                 }
 
@@ -126,12 +150,17 @@ namespace PlantSimulator
                 this.zedGraph.Invoke((MethodInvoker)delegate
                 {
                     zedGraph.Refresh();
+                    myPaneGraph.AxisChange();
+                    
 
                 });
 
                 samplingTime += 0.1;
 
                 Thread.Sleep(50);
+
+                
+
 
             }
         }
@@ -143,5 +172,7 @@ namespace PlantSimulator
             DevicesConnectionPage.Show();
 
         }
+
+        
     }
 }
