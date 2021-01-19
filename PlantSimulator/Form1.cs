@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +15,8 @@ namespace PlantSimulator
 {
     public partial class Form1 : Form
     {
+        CancellationTokenSource tokenSource = null;
+
         GraphPane myPaneGraph = new GraphPane();
 
         PointPairList listPoint = new PointPairList();
@@ -35,7 +38,7 @@ namespace PlantSimulator
             grpCommand.Visible = false;
             grpParameters.Visible = false;
             btnStep.Visible = false;
-              
+
         }
 
         public void ConfigureGraph()
@@ -46,13 +49,37 @@ namespace PlantSimulator
 
             myPaneGraph.XAxis.Title.Text = "t(s)";
 
-            myPaneGraph.YAxis.Title.Text = "C(t)";            
+            myPaneGraph.YAxis.Title.Text = "C(t)";    
+            
+            
+
+            //myPaneGraph.YAxis.Scale.Format = "F2";
+
+            //myPaneGraph.YAxis.Scale.MagAuto = false;
+
+            //myPaneGraph.YAxis.ScaleFormatEvent += new Axis.ScaleFormatHandler(YAxis_ScaleFormatEvent); 
 
             myCurveGraph = myPaneGraph.AddCurve(null, listPoint, Color.Red, SymbolType.None);
 
             myCurveGraph.Line.Width = 3;
 
         }
+
+
+        //string YAxis_ScaleFormatEvent(GraphPane myPaneGraph, Axis axis, double val, int index)
+        //{
+        //    //return String.Format("{0}", Decimal.Round((Decimal)val, 2));
+        //    if (index % 4 == 0) return val.ToString();
+        //    else if (index == 5) return val.ToString();
+        //    else return "";
+
+        //    //if (val == 0) return (val-1).ToString();
+        //    //else if (val == 0) return "Max";
+        //    //else if (val == 0.5) return val.ToString();
+        //    //else return "";
+
+        //    return index.ToString();
+        //}
 
         public void CalculaParametrosPrimeiraOrdem()
         {
@@ -62,7 +89,7 @@ namespace PlantSimulator
         }
 
         private void cbxSitema_SelectedIndexChanged(object sender, EventArgs e)
-        {            
+        {
             grpCommand.Visible = true;
             grpSistemas.Visible = true;
             grpParameters.Visible = true;
@@ -80,13 +107,14 @@ namespace PlantSimulator
                     grpSegundaOrdem.Visible = true;
                     grpParametrosPrimeiraOrdem.Visible = false;
                     break;
-            }           
+            }
 
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            Task.Run(() => ContinuousSampling());
+            tokenSource = new CancellationTokenSource();
+            Task.Run(() => ContinuousSampling(), tokenSource.Token);
             CalculaParametrosPrimeiraOrdem();
             grpSistemas.Enabled = false;
             btnStep.Visible = true;
@@ -94,6 +122,7 @@ namespace PlantSimulator
 
         private void btnStop_Click(object sender, EventArgs e)
         {
+            tokenSource.Cancel();
             controlLoopTask = false;
             grpSistemas.Enabled = true;
             btnStep.Visible = false;
@@ -103,17 +132,16 @@ namespace PlantSimulator
         private void btnStep_Click(object sender, EventArgs e)
         {
             newStepInGraph = true;
-            
+
         }
 
         private void btnReset_Click(object sender, EventArgs e)
         {
             listPoint.Clear();
             myPaneGraph.XAxis.Scale.Min = samplingTime;
-          
+
             //myPaneGraph.YAxis.Scale.Max = degrauAntigo+5;
             //zedGraph.RestoreScale(myPaneGraph);
-
 
         }
 
@@ -138,7 +166,7 @@ namespace PlantSimulator
                     sistemaPrimeiraOrdem.SetStep(newStep);
                     sistemaPrimeiraOrdem.SetInitialStepTime(samplingTime);
                     degrauAntigo = Convert.ToDouble(txtStep.Text);
-                    newStepInGraph = false;                 
+                    newStepInGraph = false;
 
                 }
 
@@ -150,19 +178,34 @@ namespace PlantSimulator
                 this.zedGraph.Invoke((MethodInvoker)delegate
                 {
                     zedGraph.Refresh();
-                    myPaneGraph.AxisChange();
-                    
+                    zedGraph.Invalidate();
+
 
                 });
 
                 samplingTime += 0.1;
-
+             
                 Thread.Sleep(50);
-
-                
 
 
             }
+        }
+
+        private void BlockNumberCharacteres_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Regex regex = new Regex("[0-9\b,-]");
+
+            e.Handled = !regex.IsMatch(e.KeyChar.ToString());
+
+        }
+
+        private void BlockSignalCharacteres_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Regex regex = new Regex("[\b+-]");
+
+            e.Handled = !regex.IsMatch(e.KeyChar.ToString());
+                
+            //sender.ToString().Split(':')[1].Contains('+');
         }
 
         private void btnConnectionPage_Click_1(object sender, EventArgs e)
@@ -173,6 +216,16 @@ namespace PlantSimulator
 
         }
 
-        
+        private void emptyTxtBoxVerify(object sender, EventArgs e)
+        {
+            if (sender.ToString().Split(':')[1].Trim() == "")
+            {
+                ((TextBox)sender).Text = "1";
+                
+            }
+
+        }
+
+
     }
 }

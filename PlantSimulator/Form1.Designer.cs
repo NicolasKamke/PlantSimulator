@@ -60,19 +60,20 @@ namespace PlantSimulator
             this.grpSistemas = new System.Windows.Forms.GroupBox();
             this.txtTS = new System.Windows.Forms.TextBox();
             this.grpParametrosPrimeiraOrdem = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtTE = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtT = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtT = new System.Windows.Forms.TextBox();
+            this.txtTE = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpParameters = new System.Windows.Forms.GroupBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
             this.grpPrimeiraOrdem.SuspendLayout();
             this.grpCommand.SuspendLayout();
             this.grpSegundaOrdem.SuspendLayout();
@@ -95,7 +96,7 @@ namespace PlantSimulator
             this.zedGraph.ScrollMinX = 0D;
             this.zedGraph.ScrollMinY = 0D;
             this.zedGraph.ScrollMinY2 = 0D;
-            this.zedGraph.Size = new System.Drawing.Size(793, 292);
+            this.zedGraph.Size = new System.Drawing.Size(958, 292);
             this.zedGraph.TabIndex = 0;
             this.zedGraph.UseExtendedPrintDialog = true;
             // 
@@ -146,7 +147,10 @@ namespace PlantSimulator
             this.txtGain.Name = "txtGain";
             this.txtGain.Size = new System.Drawing.Size(120, 20);
             this.txtGain.TabIndex = 5;
+            this.txtGain.Text = "1";
             this.txtGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // txtTau
             // 
@@ -155,17 +159,22 @@ namespace PlantSimulator
             this.txtTau.Name = "txtTau";
             this.txtTau.Size = new System.Drawing.Size(30, 20);
             this.txtTau.TabIndex = 5;
+            this.txtTau.Text = "1";
             this.txtTau.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtTau.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtTau.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // txtSignal
             // 
             this.txtSignal.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSignal.Location = new System.Drawing.Point(84, 65);
+            this.txtSignal.MaxLength = 1;
             this.txtSignal.Name = "txtSignal";
             this.txtSignal.Size = new System.Drawing.Size(20, 20);
             this.txtSignal.TabIndex = 5;
             this.txtSignal.Text = "+";
             this.txtSignal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtSignal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
             // txtA
             // 
@@ -174,7 +183,10 @@ namespace PlantSimulator
             this.txtA.Name = "txtA";
             this.txtA.Size = new System.Drawing.Size(30, 20);
             this.txtA.TabIndex = 5;
+            this.txtA.Text = "1";
             this.txtA.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtA.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // grpPrimeiraOrdem
             // 
@@ -252,6 +264,9 @@ namespace PlantSimulator
             this.txtStep.Name = "txtStep";
             this.txtStep.Size = new System.Drawing.Size(119, 20);
             this.txtStep.TabIndex = 4;
+            this.txtStep.Text = "1";
+            this.txtStep.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtStep.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // grpSegundaOrdem
             // 
@@ -278,27 +293,34 @@ namespace PlantSimulator
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(23, 20);
             this.textBox2.TabIndex = 5;
+            this.textBox2.Text = "1";
             this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.textBox2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // textBox9
             // 
             this.textBox9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox9.Location = new System.Drawing.Point(139, 65);
+            this.textBox9.MaxLength = 1;
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(20, 20);
             this.textBox9.TabIndex = 5;
             this.textBox9.Text = "+";
             this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox9.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
             // textBox3
             // 
             this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.Location = new System.Drawing.Point(70, 65);
+            this.textBox3.MaxLength = 1;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(20, 20);
             this.textBox3.TabIndex = 5;
             this.textBox3.Text = "+";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
             // textBox8
             // 
@@ -318,7 +340,10 @@ namespace PlantSimulator
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(23, 20);
             this.textBox7.TabIndex = 5;
+            this.textBox7.Text = "1";
             this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox7.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.textBox7.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // textBox4
             // 
@@ -338,7 +363,10 @@ namespace PlantSimulator
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(23, 20);
             this.textBox5.TabIndex = 5;
+            this.textBox5.Text = "1";
             this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox5.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.textBox5.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // textBox6
             // 
@@ -347,7 +375,10 @@ namespace PlantSimulator
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(120, 20);
             this.textBox6.TabIndex = 5;
+            this.textBox6.Text = "1";
             this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox6.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.textBox6.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // label2
             // 
@@ -407,86 +438,16 @@ namespace PlantSimulator
             this.grpParametrosPrimeiraOrdem.TabStop = false;
             this.grpParametrosPrimeiraOrdem.Text = "Parâmetros";
             // 
-            // label1
+            // button3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(115, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Tempo de Subida (Ts):";
-            // 
-            // txtTE
-            // 
-            this.txtTE.Enabled = false;
-            this.txtTE.Location = new System.Drawing.Point(167, 47);
-            this.txtTE.Name = "txtTE";
-            this.txtTE.Size = new System.Drawing.Size(45, 20);
-            this.txtTE.TabIndex = 11;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 50);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(161, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Tempo de Estabelecimento (Te):";
-            // 
-            // txtT
-            // 
-            this.txtT.Enabled = false;
-            this.txtT.Location = new System.Drawing.Point(167, 73);
-            this.txtT.Name = "txtT";
-            this.txtT.Size = new System.Drawing.Size(45, 20);
-            this.txtT.TabIndex = 11;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 76);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Constante de Tempo (T):";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(215, 24);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 13);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "segundos";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(215, 50);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 13);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "segundos";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(215, 76);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 13);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "segundos";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(268, 21);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(15, 20);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "?";
-            this.toolTip1.SetToolTip(this.button1, "O tempo de subida é definido como o tempo necessário \r\npara que a resposta passe " +
-        "de 10 a 90% do valor final");
-            this.button1.UseVisualStyleBackColor = true;
+            this.button3.Location = new System.Drawing.Point(268, 73);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(15, 20);
+            this.button3.TabIndex = 13;
+            this.button3.Text = "?";
+            this.toolTip1.SetToolTip(this.button3, "A constante de tempo é o tempo para \r\nque a resposta alcance 63% do valor da\r\nres" +
+        "posta em regime permanente.");
+            this.button3.UseVisualStyleBackColor = true;
             // 
             // button2
             // 
@@ -500,16 +461,86 @@ namespace PlantSimulator
         "e.");
             this.button2.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // button1
             // 
-            this.button3.Location = new System.Drawing.Point(268, 73);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(15, 20);
-            this.button3.TabIndex = 13;
-            this.button3.Text = "?";
-            this.toolTip1.SetToolTip(this.button3, "A constante de tempo é o tempo para \r\nque a resposta alcance 63% do valor da\r\nres" +
-        "posta em regime permanente.");
-            this.button3.UseVisualStyleBackColor = true;
+            this.button1.Location = new System.Drawing.Point(268, 21);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(15, 20);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "?";
+            this.toolTip1.SetToolTip(this.button1, "O tempo de subida é definido como o tempo necessário \r\npara que a resposta passe " +
+        "de 10 a 90% do valor final");
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(215, 76);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 13);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "segundos";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(215, 50);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 13);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "segundos";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(215, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(53, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "segundos";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 76);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(125, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Constante de Tempo (T):";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 50);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(161, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Tempo de Estabelecimento (Te):";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Tempo de Subida (Ts):";
+            // 
+            // txtT
+            // 
+            this.txtT.Enabled = false;
+            this.txtT.Location = new System.Drawing.Point(167, 73);
+            this.txtT.Name = "txtT";
+            this.txtT.Size = new System.Drawing.Size(45, 20);
+            this.txtT.TabIndex = 11;
+            // 
+            // txtTE
+            // 
+            this.txtTE.Enabled = false;
+            this.txtTE.Location = new System.Drawing.Point(167, 47);
+            this.txtTE.Name = "txtTE";
+            this.txtTE.Size = new System.Drawing.Size(45, 20);
+            this.txtTE.TabIndex = 11;
             // 
             // grpParameters
             // 
@@ -520,11 +551,19 @@ namespace PlantSimulator
             this.grpParameters.TabIndex = 13;
             this.grpParameters.TabStop = false;
             // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(840, 62);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(79, 20);
+            this.textBox10.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 454);
+            this.ClientSize = new System.Drawing.Size(979, 454);
+            this.Controls.Add(this.textBox10);
             this.Controls.Add(this.grpParameters);
             this.Controls.Add(this.grpSistemas);
             this.Controls.Add(this.btnConnectionPage);
@@ -594,6 +633,7 @@ namespace PlantSimulator
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox grpParameters;
+        private System.Windows.Forms.TextBox textBox10;
     }
 }
 
