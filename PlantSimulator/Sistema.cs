@@ -10,7 +10,8 @@ namespace PlantSimulator
     {
         public class PrimeiraOrdem
         {
-            double gain;
+            double gainK;
+            double gainR;
             double tau;
             double a;
             double step;
@@ -18,16 +19,17 @@ namespace PlantSimulator
             double initialStepTime = 0;
 
 
-            public PrimeiraOrdem(string stringGain, string stringTau, string stringSignal, string stringA, decimal stepValue)
+            public PrimeiraOrdem(string stringGainK, string stringGainR, string stringTau, string stringSignal, string stringA, decimal stepValue)
             {
-                this.gain = double.Parse(stringGain);
+                this.gainK = double.Parse(stringGainK);
+                this.gainR = double.Parse(stringGainR);
                 this.tau = double.Parse(stringTau);
                 this.a = double.Parse(stringSignal + stringA);
                 this.step = (double)stepValue;
             }
             public double RespostaFuncaoPrimeiraOrdem(double time)
             {
-                return (this.step * (((this.gain / this.a) * (1 - Math.Exp(-(this.a * (time - this.initialStepTime)) / this.tau))) / this.tau)) + this.initialPoint;
+                return (this.step * (((this.gainK / (this.a*this.gainR)) * (1 - Math.Exp(-((this.a* this.gainR) * (time - this.initialStepTime)) / this.tau))) / this.tau)) + this.initialPoint;
             }
 
             public void SetStep(decimal stepValue)

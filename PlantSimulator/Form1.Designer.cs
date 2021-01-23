@@ -35,7 +35,7 @@ namespace PlantSimulator
             this.cbxSitema = new System.Windows.Forms.ComboBox();
             this.lblSistema = new System.Windows.Forms.Label();
             this.lblTransferFunction = new System.Windows.Forms.Label();
-            this.txtGain = new System.Windows.Forms.TextBox();
+            this.txtGainK = new System.Windows.Forms.TextBox();
             this.txtTau = new System.Windows.Forms.TextBox();
             this.txtSignal = new System.Windows.Forms.TextBox();
             this.txtA = new System.Windows.Forms.TextBox();
@@ -74,12 +74,16 @@ namespace PlantSimulator
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpParameters = new System.Windows.Forms.GroupBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtFeedbackGain = new System.Windows.Forms.TextBox();
             this.grpPrimeiraOrdem.SuspendLayout();
             this.grpCommand.SuspendLayout();
             this.grpSegundaOrdem.SuspendLayout();
             this.grpSistemas.SuspendLayout();
             this.grpParametrosPrimeiraOrdem.SuspendLayout();
             this.grpParameters.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // zedGraph
@@ -96,7 +100,7 @@ namespace PlantSimulator
             this.zedGraph.ScrollMinX = 0D;
             this.zedGraph.ScrollMinY = 0D;
             this.zedGraph.ScrollMinY2 = 0D;
-            this.zedGraph.Size = new System.Drawing.Size(958, 292);
+            this.zedGraph.Size = new System.Drawing.Size(789, 292);
             this.zedGraph.TabIndex = 0;
             this.zedGraph.UseExtendedPrintDialog = true;
             // 
@@ -140,17 +144,17 @@ namespace PlantSimulator
             this.lblTransferFunction.TabIndex = 4;
             this.lblTransferFunction.Text = "Função de Transferência";
             // 
-            // txtGain
+            // txtGainK
             // 
-            this.txtGain.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtGain.Location = new System.Drawing.Point(25, 39);
-            this.txtGain.Name = "txtGain";
-            this.txtGain.Size = new System.Drawing.Size(120, 20);
-            this.txtGain.TabIndex = 5;
-            this.txtGain.Text = "1";
-            this.txtGain.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.txtGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.txtGainK.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtGainK.Location = new System.Drawing.Point(25, 39);
+            this.txtGainK.Name = "txtGainK";
+            this.txtGainK.Size = new System.Drawing.Size(120, 20);
+            this.txtGainK.TabIndex = 5;
+            this.txtGainK.Text = "1";
+            this.txtGainK.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtGainK.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtGainK.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // txtTau
             // 
@@ -194,7 +198,7 @@ namespace PlantSimulator
             this.grpPrimeiraOrdem.Controls.Add(this.txtSignal);
             this.grpPrimeiraOrdem.Controls.Add(this.textBox1);
             this.grpPrimeiraOrdem.Controls.Add(this.txtTau);
-            this.grpPrimeiraOrdem.Controls.Add(this.txtGain);
+            this.grpPrimeiraOrdem.Controls.Add(this.txtGainK);
             this.grpPrimeiraOrdem.Controls.Add(this.lblTransferFunction);
             this.grpPrimeiraOrdem.Location = new System.Drawing.Point(27, 8);
             this.grpPrimeiraOrdem.Name = "grpPrimeiraOrdem";
@@ -401,11 +405,13 @@ namespace PlantSimulator
             // 
             // grpSistemas
             // 
-            this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
+            this.grpSistemas.Controls.Add(this.txtFeedbackGain);
+            this.grpSistemas.Controls.Add(this.label8);
             this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
+            this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
             this.grpSistemas.Location = new System.Drawing.Point(114, 12);
             this.grpSistemas.Name = "grpSistemas";
-            this.grpSistemas.Size = new System.Drawing.Size(220, 110);
+            this.grpSistemas.Size = new System.Drawing.Size(220, 127);
             this.grpSistemas.TabIndex = 10;
             this.grpSistemas.TabStop = false;
             // 
@@ -553,16 +559,49 @@ namespace PlantSimulator
             // 
             // textBox10
             // 
-            this.textBox10.Location = new System.Drawing.Point(840, 62);
+            this.textBox10.Location = new System.Drawing.Point(821, 18);
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(79, 20);
             this.textBox10.TabIndex = 14;
+            this.textBox10.TextChanged += new System.EventHandler(this.textBox10_TextChanged);
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(832, 82);
+            this.trackBar1.Maximum = 2000;
+            this.trackBar1.Minimum = 10;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(414, 45);
+            this.trackBar1.TabIndex = 15;
+            this.trackBar1.TickFrequency = 100;
+            this.trackBar1.Value = 50;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 106);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(105, 13);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "Ganho de retroação:";
+            // 
+            // txtFeedbackGain
+            // 
+            this.txtFeedbackGain.Location = new System.Drawing.Point(111, 103);
+            this.txtFeedbackGain.Name = "txtFeedbackGain";
+            this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
+            this.txtFeedbackGain.TabIndex = 8;
+            this.txtFeedbackGain.Text = "1";
+            this.txtFeedbackGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtFeedbackGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(979, 454);
+            this.ClientSize = new System.Drawing.Size(810, 454);
+            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.textBox10);
             this.Controls.Add(this.grpParameters);
             this.Controls.Add(this.grpSistemas);
@@ -580,9 +619,11 @@ namespace PlantSimulator
             this.grpSegundaOrdem.ResumeLayout(false);
             this.grpSegundaOrdem.PerformLayout();
             this.grpSistemas.ResumeLayout(false);
+            this.grpSistemas.PerformLayout();
             this.grpParametrosPrimeiraOrdem.ResumeLayout(false);
             this.grpParametrosPrimeiraOrdem.PerformLayout();
             this.grpParameters.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -595,7 +636,7 @@ namespace PlantSimulator
         private System.Windows.Forms.ComboBox cbxSitema;
         private System.Windows.Forms.Label lblSistema;
         private System.Windows.Forms.Label lblTransferFunction;
-        private System.Windows.Forms.TextBox txtGain;
+        private System.Windows.Forms.TextBox txtGainK;
         private System.Windows.Forms.TextBox txtTau;
         private System.Windows.Forms.TextBox txtSignal;
         private System.Windows.Forms.TextBox txtA;
@@ -634,6 +675,9 @@ namespace PlantSimulator
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox grpParameters;
         private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.TextBox txtFeedbackGain;
+        private System.Windows.Forms.Label label8;
     }
 }
 

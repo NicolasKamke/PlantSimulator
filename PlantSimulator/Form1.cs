@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Ports;
 using ZedGraph;
 
 namespace PlantSimulator
@@ -27,6 +28,7 @@ namespace PlantSimulator
         bool newStepInGraph = false;
         double degrauAntigo;
         double samplingTime = 0;
+        int velocityPloting;
 
 
         public Form1()
@@ -49,9 +51,11 @@ namespace PlantSimulator
 
             myPaneGraph.XAxis.Title.Text = "t(s)";
 
-            myPaneGraph.YAxis.Title.Text = "C(t)";    
-            
-            
+            myPaneGraph.YAxis.Title.Text = "C(t)";
+
+            myPaneGraph.XAxis.MajorGrid.IsVisible = true;
+
+            myPaneGraph.YAxis.MajorGrid.IsVisible = true;
 
             //myPaneGraph.YAxis.Scale.Format = "F2";
 
@@ -151,10 +155,11 @@ namespace PlantSimulator
             controlLoopTask = true;
             degrauAntigo = Convert.ToDouble(txtStep.Text);
 
-            Sistema.PrimeiraOrdem sistemaPrimeiraOrdem = new Sistema.PrimeiraOrdem(txtGain.Text, txtTau.Text, txtSignal.Text, txtA.Text, Convert.ToDecimal(txtStep.Text));
+            Sistema.PrimeiraOrdem sistemaPrimeiraOrdem = new Sistema.PrimeiraOrdem(txtGainK.Text, txtFeedbackGain.Text, txtTau.Text, txtSignal.Text, txtA.Text, Convert.ToDecimal(txtStep.Text));
 
             listPoint.Clear();
-            ConfigureGraph();
+            myPaneGraph.XAxis.Scale.Min = samplingTime;
+            //ConfigureGraph();
 
             while (controlLoopTask)
             {
@@ -183,9 +188,9 @@ namespace PlantSimulator
 
                 });
 
-                samplingTime += 0.1;
+                samplingTime += 1;
              
-                Thread.Sleep(50);
+                Thread.Sleep(velocityPloting);
 
 
             }
@@ -226,6 +231,16 @@ namespace PlantSimulator
 
         }
 
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            textBox10.Text = trackBar1.Value.ToString();
+            velocityPloting = trackBar1.Value;
+        }
 
+        private void textBox10_TextChanged(object sender, EventArgs e)
+        {
+            trackBar1.Value = int.Parse(textBox10.Text);
+            velocityPloting = trackBar1.Value;
+        }
     }
 }
