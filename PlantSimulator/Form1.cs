@@ -23,18 +23,18 @@ namespace PlantSimulator
         PointPairList listPoint = new PointPairList();
 
         LineItem myCurveGraph;
-
         bool controlLoopTask;
         bool newStepInGraph = false;
         double degrauAntigo;
         double samplingTime = 0;
         int velocityPloting;
 
-
         public Form1()
         {
             InitializeComponent();
             ConfigureGraph();
+
+
 
             grpSistemas.Visible = false;
             grpCommand.Visible = false;
@@ -69,21 +69,6 @@ namespace PlantSimulator
 
         }
 
-
-        //string YAxis_ScaleFormatEvent(GraphPane myPaneGraph, Axis axis, double val, int index)
-        //{
-        //    //return String.Format("{0}", Decimal.Round((Decimal)val, 2));
-        //    if (index % 4 == 0) return val.ToString();
-        //    else if (index == 5) return val.ToString();
-        //    else return "";
-
-        //    //if (val == 0) return (val-1).ToString();
-        //    //else if (val == 0) return "Max";
-        //    //else if (val == 0.5) return val.ToString();
-        //    //else return "";
-
-        //    return index.ToString();
-        //}
 
         public void CalculaParametrosPrimeiraOrdem()
         {
@@ -184,6 +169,7 @@ namespace PlantSimulator
                 {
                     zedGraph.Refresh();
                     zedGraph.Invalidate();
+                    
 
 
                 });
@@ -191,7 +177,7 @@ namespace PlantSimulator
                 samplingTime += 1;
              
                 Thread.Sleep(velocityPloting);
-
+                
 
             }
         }
@@ -216,7 +202,7 @@ namespace PlantSimulator
         private void btnConnectionPage_Click_1(object sender, EventArgs e)
         {
 
-            FormDevicesConnection DevicesConnectionPage = new FormDevicesConnection();
+            FormDevicesConnection DevicesConnectionPage = new FormDevicesConnection(this);
             DevicesConnectionPage.Show();
 
         }
@@ -242,5 +228,55 @@ namespace PlantSimulator
             trackBar1.Value = int.Parse(textBox10.Text);
             velocityPloting = trackBar1.Value;
         }
+
+        
+
+        
+        public void connectDevice()
+        {       
+            try
+            {
+                serialPort.PortName = Conexao.portName;
+                serialPort.BaudRate = Conexao.baudRate;
+                serialPort.Open();
+                Conexao.status = "Conectado";
+                Conexao.connect = true;
+                textBox11.Text = "Conectado";
+
+            }
+
+            catch
+            {
+                Conexao.status = "Erro de conexão";
+                textBox11.Text = "Erro de conexão";
+            }
+
+        }
+        public void disconnectDevice()
+        {
+            serialPort.Close();
+            Conexao.connect = false;
+        }
+
+
+            public void receiveDataDevice()
+        {
+            if (serialPort.IsOpen)
+            {
+                textBox11.Text = serialPort.ReadLine();
+            }
+        }
+
+        public void sendDataDevice(string data)
+        {
+            if (serialPort.IsOpen)
+            {
+                serialPort.WriteLine(data);
+            }
+        }
+
+
+
+
     }
 }

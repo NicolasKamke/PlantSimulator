@@ -58,6 +58,8 @@ namespace PlantSimulator
             this.label2 = new System.Windows.Forms.Label();
             this.btnConnectionPage = new System.Windows.Forms.Button();
             this.grpSistemas = new System.Windows.Forms.GroupBox();
+            this.txtFeedbackGain = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.txtTS = new System.Windows.Forms.TextBox();
             this.grpParametrosPrimeiraOrdem = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
@@ -75,8 +77,8 @@ namespace PlantSimulator
             this.grpParameters = new System.Windows.Forms.GroupBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtFeedbackGain = new System.Windows.Forms.TextBox();
+            this.serialPort = new System.IO.Ports.SerialPort(this.components);
+            this.textBox11 = new System.Windows.Forms.TextBox();
             this.grpPrimeiraOrdem.SuspendLayout();
             this.grpCommand.SuspendLayout();
             this.grpSegundaOrdem.SuspendLayout();
@@ -100,7 +102,7 @@ namespace PlantSimulator
             this.zedGraph.ScrollMinX = 0D;
             this.zedGraph.ScrollMinY = 0D;
             this.zedGraph.ScrollMinY2 = 0D;
-            this.zedGraph.Size = new System.Drawing.Size(789, 292);
+            this.zedGraph.Size = new System.Drawing.Size(788, 292);
             this.zedGraph.TabIndex = 0;
             this.zedGraph.UseExtendedPrintDialog = true;
             // 
@@ -415,6 +417,25 @@ namespace PlantSimulator
             this.grpSistemas.TabIndex = 10;
             this.grpSistemas.TabStop = false;
             // 
+            // txtFeedbackGain
+            // 
+            this.txtFeedbackGain.Location = new System.Drawing.Point(111, 103);
+            this.txtFeedbackGain.Name = "txtFeedbackGain";
+            this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
+            this.txtFeedbackGain.TabIndex = 8;
+            this.txtFeedbackGain.Text = "1";
+            this.txtFeedbackGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtFeedbackGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 106);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(105, 13);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "Ganho de retroação:";
+            // 
             // txtTS
             // 
             this.txtTS.Enabled = false;
@@ -577,30 +598,19 @@ namespace PlantSimulator
             this.trackBar1.Value = 50;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
-            // label8
+            // textBox11
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 106);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(105, 13);
-            this.label8.TabIndex = 7;
-            this.label8.Text = "Ganho de retroação:";
-            // 
-            // txtFeedbackGain
-            // 
-            this.txtFeedbackGain.Location = new System.Drawing.Point(111, 103);
-            this.txtFeedbackGain.Name = "txtFeedbackGain";
-            this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
-            this.txtFeedbackGain.TabIndex = 8;
-            this.txtFeedbackGain.Text = "1";
-            this.txtFeedbackGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.txtFeedbackGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.textBox11.Location = new System.Drawing.Point(984, 42);
+            this.textBox11.Name = "textBox11";
+            this.textBox11.Size = new System.Drawing.Size(92, 20);
+            this.textBox11.TabIndex = 16;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(810, 454);
+            this.ClientSize = new System.Drawing.Size(809, 454);
+            this.Controls.Add(this.textBox11);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.textBox10);
             this.Controls.Add(this.grpParameters);
@@ -678,6 +688,8 @@ namespace PlantSimulator
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TextBox txtFeedbackGain;
         private System.Windows.Forms.Label label8;
+        private System.IO.Ports.SerialPort serialPort;
+        private System.Windows.Forms.TextBox textBox11;
     }
 }
 

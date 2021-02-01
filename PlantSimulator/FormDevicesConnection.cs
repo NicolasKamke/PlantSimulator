@@ -13,9 +13,25 @@ namespace PlantSimulator
 {
     public partial class FormDevicesConnection : Form
     {
-        public FormDevicesConnection()
+        Form1 form1;
+        public FormDevicesConnection(Form1 masterform)
         {
             InitializeComponent();
+            txtStatus.Text = Conexao.status;
+            form1 = masterform;
+
+            if (Conexao.connect)
+            {
+                btnConnect.Visible = false;
+                btnDisconnect.Visible = true;
+                cmbCOMPort.Text = Conexao.portName;
+                cmbBaudRate.Text = Conexao.baudRate.ToString();
+            }
+            else
+            {
+                btnDisconnect.Visible = false;
+                btnConnect.Visible = true;
+            }
         }
 
         private void FormDevicesConnection_Load(object sender, EventArgs e)
@@ -26,48 +42,31 @@ namespace PlantSimulator
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
-            if (serialPort.IsOpen)
-            {
-                serialPort.Close();
-                txtStatus.Text = "Desconectado";
-                btnDisconnect.Visible = false;
-                btnConnect.Visible = true;
 
-            }
+            Conexao.Disconnect();
+            form1.disconnectDevice();
+            btnDisconnect.Visible = false;
+            btnConnect.Visible = true;
+
         }
 
-            private void btnConnect_Click(object sender, EventArgs e)
+        private void btnConnect_Click(object sender, EventArgs e)
         {
-            try
-            {
-                serialPort.PortName = cmbCOMPort.Text;
-                serialPort.BaudRate = int.Parse(cmbBaudRate.Text);
-                txtStatus.Text = "Conectado";
-                serialPort.Open();
-                btnConnect.Visible = false;
-                btnDisconnect.Visible = true;
-            }
-            catch
-            {
-                txtStatus.Text = "Erro de conexão";
-            }
-            
+            Conexao.Connect(cmbCOMPort.Text, cmbBaudRate.Text);            
+            btnConnect.Visible = false;
+            btnDisconnect.Visible = true;
+            form1.connectDevice();
+
         }
 
         private void btnTestSend_Click(object sender, EventArgs e)
-        {
-            if (serialPort.IsOpen)
-            {
-                serialPort.WriteLine(txtTestSend.Text);
-            }
+        {            
+            form1.sendDataDevice(txtTestSend.Text);
         }
 
         private void btnReceive_Click(object sender, EventArgs e)
         {
-            if (serialPort.IsOpen)
-            {
-                txtReceive.Text = serialPort.ReadLine();
-            }
+            form1.receiveDataDevice();
         }
     }
 }
