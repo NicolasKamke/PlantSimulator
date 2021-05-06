@@ -29,11 +29,6 @@ C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\Pla
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator_Server\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.CopyComplete
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator_Server\PlantSimulator_Server\obj\Debug\PlantSimulator.exe
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator_Server\PlantSimulator_Server\obj\Debug\PlantSimulator.pdb
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.Form1.resources
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.FormDevicesConnection.resources
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator.Properties.Resources.resources
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.GenerateResource.cache
-C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.CoreCompileInputs.cache
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\PlantSimulator.exe.config
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\PlantSimulator.exe.manifest
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\PlantSimulator.application
@@ -69,6 +64,12 @@ C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\Pla
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\tr\ZedGraph.resources.dll
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\zh-cn\ZedGraph.resources.dll
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\bin\Debug\zh-tw\ZedGraph.resources.dll
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator.Communication.Rest.Forms.FormRest.resources
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.Form1.resources
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.FormDevicesConnection.resources
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator.Properties.Resources.resources
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.GenerateResource.cache
+C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.CoreCompileInputs.cache
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator.exe.manifest
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator.application
 C:\Users\Nicol\OneDrive\Área de Trabalho\TCC\VisualStudio\PlantSimulator2.0\PlantSimulator\PlantSimulator_Server\obj\Debug\PlantSimulator_Server.csproj.CopyComplete

@@ -1,32 +1,35 @@
 ﻿using PlantSimulator.Communication.Rest.Models;
-using System;
-using System.Collections.Generic;
+using PlantSimulator_Server;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace PlantSimulator.Communication.Rest.Controllers
 {
     public class DadosController : ApiController
     {
-        private static Dados data = new Dados();
-
+        private static Dados data = new Dados();        
+  
         public string Get(string id)
         {
-            if (id == "input") return data.Input;
 
+            MonitoraConexao.ReceiveFlow();
 
-            if (id == "output") return data.Output;
+            if (id == "input") return data.Input.ToString();
+
+            if (id == "output") return data.Output.ToString();           
+
             else return null;
-
         }
 
 
         public void Post(string input)
         {
-            data.Input = input;
-            data.Output = input + " 1234";
+            MonitoraConexao.SendFlow();
+
+            data.RecebeDados(input);
+           
+            data.Output = Sistema.Resposta.MalhaAberta(data.Input, data.Step);
+
         }
     }
 }

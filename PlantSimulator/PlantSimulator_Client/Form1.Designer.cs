@@ -30,6 +30,7 @@ namespace PlantSimulator_Client
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.zedGraph = new ZedGraph.ZedGraphControl();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
@@ -41,12 +42,13 @@ namespace PlantSimulator_Client
             this.txtFeedbackGain = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
-            this.textBox11 = new System.Windows.Forms.TextBox();
+            this.picOpcButton = new System.Windows.Forms.PictureBox();
+            this.picRestButton = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.grpCommand.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
             this.SuspendLayout();
             // 
             // zedGraph
@@ -54,7 +56,7 @@ namespace PlantSimulator_Client
             this.zedGraph.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.zedGraph.Location = new System.Drawing.Point(12, 144);
+            this.zedGraph.Location = new System.Drawing.Point(12, 192);
             this.zedGraph.Name = "zedGraph";
             this.zedGraph.ScrollGrace = 0D;
             this.zedGraph.ScrollMaxX = 0D;
@@ -63,7 +65,7 @@ namespace PlantSimulator_Client
             this.zedGraph.ScrollMinX = 0D;
             this.zedGraph.ScrollMinY = 0D;
             this.zedGraph.ScrollMinY2 = 0D;
-            this.zedGraph.Size = new System.Drawing.Size(788, 292);
+            this.zedGraph.Size = new System.Drawing.Size(725, 351);
             this.zedGraph.TabIndex = 0;
             this.zedGraph.UseExtendedPrintDialog = true;
             // 
@@ -94,7 +96,7 @@ namespace PlantSimulator_Client
             this.grpCommand.Controls.Add(this.txtStep);
             this.grpCommand.Controls.Add(this.btnStart);
             this.grpCommand.Controls.Add(this.btnStop);
-            this.grpCommand.Location = new System.Drawing.Point(340, 12);
+            this.grpCommand.Location = new System.Drawing.Point(223, 70);
             this.grpCommand.Name = "grpCommand";
             this.grpCommand.Size = new System.Drawing.Size(149, 110);
             this.grpCommand.TabIndex = 8;
@@ -133,17 +135,16 @@ namespace PlantSimulator_Client
             // 
             // btnConnectionPage
             // 
-            this.btnConnectionPage.Location = new System.Drawing.Point(15, 82);
+            this.btnConnectionPage.Location = new System.Drawing.Point(14, 140);
             this.btnConnectionPage.Name = "btnConnectionPage";
             this.btnConnectionPage.Size = new System.Drawing.Size(79, 26);
             this.btnConnectionPage.TabIndex = 9;
             this.btnConnectionPage.Text = "Conectar";
             this.btnConnectionPage.UseVisualStyleBackColor = true;
-            this.btnConnectionPage.Click += new System.EventHandler(this.btnConnectionPage_Click_1);
             // 
             // txtFeedbackGain
             // 
-            this.txtFeedbackGain.Location = new System.Drawing.Point(677, 93);
+            this.txtFeedbackGain.Location = new System.Drawing.Point(560, 151);
             this.txtFeedbackGain.Name = "txtFeedbackGain";
             this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
             this.txtFeedbackGain.TabIndex = 8;
@@ -154,57 +155,67 @@ namespace PlantSimulator_Client
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(572, 96);
+            this.label8.Location = new System.Drawing.Point(455, 154);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(105, 13);
             this.label8.TabIndex = 7;
             this.label8.Text = "Ganho de retroação:";
             // 
-            // textBox10
+            // picOpcButton
             // 
-            this.textBox10.Location = new System.Drawing.Point(821, 18);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(79, 20);
-            this.textBox10.TabIndex = 14;
-            this.textBox10.TextChanged += new System.EventHandler(this.textBox10_TextChanged);
+            this.picOpcButton.BackColor = System.Drawing.Color.White;
+            this.picOpcButton.Image = ((System.Drawing.Image)(resources.GetObject("picOpcButton.Image")));
+            this.picOpcButton.Location = new System.Drawing.Point(92, 12);
+            this.picOpcButton.Name = "picOpcButton";
+            this.picOpcButton.Size = new System.Drawing.Size(75, 50);
+            this.picOpcButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picOpcButton.TabIndex = 20;
+            this.picOpcButton.TabStop = false;
+            this.picOpcButton.Click += new System.EventHandler(this.picOpcButton_Click);
+            this.picOpcButton.DoubleClick += new System.EventHandler(this.picOpcButton_DoubleClick);
             // 
-            // trackBar1
+            // picRestButton
             // 
-            this.trackBar1.Location = new System.Drawing.Point(832, 82);
-            this.trackBar1.Maximum = 2000;
-            this.trackBar1.Minimum = 10;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(414, 45);
-            this.trackBar1.TabIndex = 15;
-            this.trackBar1.TickFrequency = 100;
-            this.trackBar1.Value = 50;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            this.picRestButton.BackColor = System.Drawing.Color.White;
+            this.picRestButton.Image = ((System.Drawing.Image)(resources.GetObject("picRestButton.Image")));
+            this.picRestButton.Location = new System.Drawing.Point(8, 12);
+            this.picRestButton.Name = "picRestButton";
+            this.picRestButton.Size = new System.Drawing.Size(72, 50);
+            this.picRestButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picRestButton.TabIndex = 18;
+            this.picRestButton.TabStop = false;
+            this.picRestButton.Click += new System.EventHandler(this.picRestButton_Click);
+            this.picRestButton.DoubleClick += new System.EventHandler(this.picRestButton_DoubleClick);
             // 
-            // textBox11
+            // label1
             // 
-            this.textBox11.Location = new System.Drawing.Point(984, 42);
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(92, 20);
-            this.textBox11.TabIndex = 16;
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(3, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(734, 57);
+            this.label1.TabIndex = 19;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(809, 454);
+            this.ClientSize = new System.Drawing.Size(746, 555);
+            this.Controls.Add(this.picOpcButton);
+            this.Controls.Add(this.picRestButton);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtFeedbackGain);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.textBox11);
-            this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.textBox10);
             this.Controls.Add(this.btnConnectionPage);
             this.Controls.Add(this.grpCommand);
             this.Controls.Add(this.zedGraph);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CLIENT";
             this.grpCommand.ResumeLayout(false);
             this.grpCommand.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -221,12 +232,12 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnStep;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.TextBox textBox10;
-        private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TextBox txtFeedbackGain;
         private System.Windows.Forms.Label label8;
         private System.IO.Ports.SerialPort serialPort;
-        private System.Windows.Forms.TextBox textBox11;
+        private System.Windows.Forms.PictureBox picOpcButton;
+        private System.Windows.Forms.PictureBox picRestButton;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -30,6 +30,7 @@ namespace PlantSimulator_Server
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.cbxSitema = new System.Windows.Forms.ComboBox();
             this.lblSistema = new System.Windows.Forms.Label();
             this.lblTransferFunction = new System.Windows.Forms.Label();
@@ -40,16 +41,15 @@ namespace PlantSimulator_Server
             this.grpPrimeiraOrdem = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.grpSegundaOrdem = new System.Windows.Forms.GroupBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txtbWn2 = new System.Windows.Forms.TextBox();
+            this.txtSignal2 = new System.Windows.Forms.TextBox();
+            this.textSignal1 = new System.Windows.Forms.TextBox();
             this.textBox8 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.txtKsiWn = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.txtbA = new System.Windows.Forms.TextBox();
+            this.txtWn2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.btnConnectionPage = new System.Windows.Forms.Button();
             this.grpSistemas = new System.Windows.Forms.GroupBox();
             this.txtTS = new System.Windows.Forms.TextBox();
             this.grpParametrosPrimeiraOrdem = new System.Windows.Forms.GroupBox();
@@ -67,11 +67,20 @@ namespace PlantSimulator_Server
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpParameters = new System.Windows.Forms.GroupBox();
             this.serialPort = new System.IO.Ports.SerialPort(this.components);
+            this.picRestButton = new System.Windows.Forms.PictureBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.picOpcButton = new System.Windows.Forms.PictureBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnDataReceive = new PlantSimulator.CircularButton();
+            this.btnDataSend = new PlantSimulator.CircularButton();
             this.grpPrimeiraOrdem.SuspendLayout();
             this.grpSegundaOrdem.SuspendLayout();
             this.grpSistemas.SuspendLayout();
             this.grpParametrosPrimeiraOrdem.SuspendLayout();
             this.grpParameters.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
             this.SuspendLayout();
             // 
             // cbxSitema
@@ -80,7 +89,7 @@ namespace PlantSimulator_Server
             this.cbxSitema.Items.AddRange(new object[] {
             "1ª Ordem",
             "2ª Ordem"});
-            this.cbxSitema.Location = new System.Drawing.Point(12, 37);
+            this.cbxSitema.Location = new System.Drawing.Point(10, 102);
             this.cbxSitema.Name = "cbxSitema";
             this.cbxSitema.Size = new System.Drawing.Size(93, 21);
             this.cbxSitema.TabIndex = 2;
@@ -89,7 +98,7 @@ namespace PlantSimulator_Server
             // lblSistema
             // 
             this.lblSistema.AutoSize = true;
-            this.lblSistema.Location = new System.Drawing.Point(12, 18);
+            this.lblSistema.Location = new System.Drawing.Point(10, 83);
             this.lblSistema.Name = "lblSistema";
             this.lblSistema.Size = new System.Drawing.Size(93, 13);
             this.lblSistema.TabIndex = 3;
@@ -113,6 +122,7 @@ namespace PlantSimulator_Server
             this.txtGainK.TabIndex = 5;
             this.txtGainK.Text = "1";
             this.txtGainK.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtGainK.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtGainK.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
             this.txtGainK.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -125,6 +135,7 @@ namespace PlantSimulator_Server
             this.txtTau.TabIndex = 5;
             this.txtTau.Text = "1";
             this.txtTau.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtTau.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtTau.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
             this.txtTau.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -138,6 +149,7 @@ namespace PlantSimulator_Server
             this.txtSignal.TabIndex = 5;
             this.txtSignal.Text = "+";
             this.txtSignal.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtSignal.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtSignal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
             // txtA
@@ -149,6 +161,7 @@ namespace PlantSimulator_Server
             this.txtA.TabIndex = 5;
             this.txtA.Text = "1";
             this.txtA.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtA.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
             this.txtA.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -180,14 +193,14 @@ namespace PlantSimulator_Server
             // 
             // grpSegundaOrdem
             // 
-            this.grpSegundaOrdem.Controls.Add(this.textBox2);
-            this.grpSegundaOrdem.Controls.Add(this.textBox9);
-            this.grpSegundaOrdem.Controls.Add(this.textBox3);
+            this.grpSegundaOrdem.Controls.Add(this.txtbWn2);
+            this.grpSegundaOrdem.Controls.Add(this.txtSignal2);
+            this.grpSegundaOrdem.Controls.Add(this.textSignal1);
             this.grpSegundaOrdem.Controls.Add(this.textBox8);
-            this.grpSegundaOrdem.Controls.Add(this.textBox7);
+            this.grpSegundaOrdem.Controls.Add(this.txtKsiWn);
             this.grpSegundaOrdem.Controls.Add(this.textBox4);
-            this.grpSegundaOrdem.Controls.Add(this.textBox5);
-            this.grpSegundaOrdem.Controls.Add(this.textBox6);
+            this.grpSegundaOrdem.Controls.Add(this.txtbA);
+            this.grpSegundaOrdem.Controls.Add(this.txtWn2);
             this.grpSegundaOrdem.Controls.Add(this.label2);
             this.grpSegundaOrdem.Location = new System.Drawing.Point(7, 8);
             this.grpSegundaOrdem.Name = "grpSegundaOrdem";
@@ -196,41 +209,44 @@ namespace PlantSimulator_Server
             this.grpSegundaOrdem.TabStop = false;
             this.grpSegundaOrdem.Text = "Segunda Ordem";
             // 
-            // textBox2
+            // txtbWn2
             // 
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(164, 65);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(23, 20);
-            this.textBox2.TabIndex = 5;
-            this.textBox2.Text = "1";
-            this.textBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.textBox2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.txtbWn2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbWn2.Location = new System.Drawing.Point(164, 65);
+            this.txtbWn2.Name = "txtbWn2";
+            this.txtbWn2.Size = new System.Drawing.Size(23, 20);
+            this.txtbWn2.TabIndex = 5;
+            this.txtbWn2.Text = "1";
+            this.txtbWn2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtbWn2.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.txtbWn2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtbWn2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
-            // textBox9
+            // txtSignal2
             // 
-            this.textBox9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox9.Location = new System.Drawing.Point(139, 65);
-            this.textBox9.MaxLength = 1;
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(20, 20);
-            this.textBox9.TabIndex = 5;
-            this.textBox9.Text = "+";
-            this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox9.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
+            this.txtSignal2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSignal2.Location = new System.Drawing.Point(139, 65);
+            this.txtSignal2.MaxLength = 1;
+            this.txtSignal2.Name = "txtSignal2";
+            this.txtSignal2.Size = new System.Drawing.Size(20, 20);
+            this.txtSignal2.TabIndex = 5;
+            this.txtSignal2.Text = "+";
+            this.txtSignal2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtSignal2.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.txtSignal2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
-            // textBox3
+            // textSignal1
             // 
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(70, 65);
-            this.textBox3.MaxLength = 1;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(20, 20);
-            this.textBox3.TabIndex = 5;
-            this.textBox3.Text = "+";
-            this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
+            this.textSignal1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textSignal1.Location = new System.Drawing.Point(70, 65);
+            this.textSignal1.MaxLength = 1;
+            this.textSignal1.Name = "textSignal1";
+            this.textSignal1.Size = new System.Drawing.Size(20, 20);
+            this.textSignal1.TabIndex = 5;
+            this.textSignal1.Text = "+";
+            this.textSignal1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textSignal1.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.textSignal1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockSignalCharacteres_KeyPress);
             // 
             // textBox8
             // 
@@ -243,17 +259,18 @@ namespace PlantSimulator_Server
             this.textBox8.Text = "s";
             this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textBox7
+            // txtKsiWn
             // 
-            this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox7.Location = new System.Drawing.Point(93, 65);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(23, 20);
-            this.textBox7.TabIndex = 5;
-            this.textBox7.Text = "1";
-            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox7.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.textBox7.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.txtKsiWn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtKsiWn.Location = new System.Drawing.Point(93, 65);
+            this.txtKsiWn.Name = "txtKsiWn";
+            this.txtKsiWn.Size = new System.Drawing.Size(23, 20);
+            this.txtKsiWn.TabIndex = 5;
+            this.txtKsiWn.Text = "1";
+            this.txtKsiWn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtKsiWn.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.txtKsiWn.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtKsiWn.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // textBox4
             // 
@@ -266,29 +283,31 @@ namespace PlantSimulator_Server
             this.textBox4.Text = "s²";
             this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textBox5
+            // txtbA
             // 
-            this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(24, 65);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(23, 20);
-            this.textBox5.TabIndex = 5;
-            this.textBox5.Text = "1";
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox5.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.textBox5.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.txtbA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtbA.Location = new System.Drawing.Point(24, 65);
+            this.txtbA.Name = "txtbA";
+            this.txtbA.Size = new System.Drawing.Size(23, 20);
+            this.txtbA.TabIndex = 5;
+            this.txtbA.Text = "1";
+            this.txtbA.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtbA.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.txtbA.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtbA.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
-            // textBox6
+            // txtWn2
             // 
-            this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox6.Location = new System.Drawing.Point(46, 39);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(120, 20);
-            this.textBox6.TabIndex = 5;
-            this.textBox6.Text = "1";
-            this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox6.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
-            this.textBox6.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.txtWn2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtWn2.Location = new System.Drawing.Point(46, 39);
+            this.txtWn2.Name = "txtWn2";
+            this.txtWn2.Size = new System.Drawing.Size(120, 20);
+            this.txtWn2.TabIndex = 5;
+            this.txtWn2.Text = "1";
+            this.txtWn2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtWn2.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
+            this.txtWn2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtWn2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // label2
             // 
@@ -299,21 +318,11 @@ namespace PlantSimulator_Server
             this.label2.TabIndex = 4;
             this.label2.Text = "Função de Transferência";
             // 
-            // btnConnectionPage
-            // 
-            this.btnConnectionPage.Location = new System.Drawing.Point(15, 82);
-            this.btnConnectionPage.Name = "btnConnectionPage";
-            this.btnConnectionPage.Size = new System.Drawing.Size(79, 26);
-            this.btnConnectionPage.TabIndex = 9;
-            this.btnConnectionPage.Text = "Conectar";
-            this.btnConnectionPage.UseVisualStyleBackColor = true;
-            this.btnConnectionPage.Click += new System.EventHandler(this.btnConnectionPage_Click_1);
-            // 
             // grpSistemas
             // 
-            this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
             this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
-            this.grpSistemas.Location = new System.Drawing.Point(114, 12);
+            this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
+            this.grpSistemas.Location = new System.Drawing.Point(114, 69);
             this.grpSistemas.Name = "grpSistemas";
             this.grpSistemas.Size = new System.Drawing.Size(220, 118);
             this.grpSistemas.TabIndex = 10;
@@ -455,24 +464,106 @@ namespace PlantSimulator_Server
             // grpParameters
             // 
             this.grpParameters.Controls.Add(this.grpParametrosPrimeiraOrdem);
-            this.grpParameters.Location = new System.Drawing.Point(349, 12);
+            this.grpParameters.Location = new System.Drawing.Point(349, 65);
             this.grpParameters.Name = "grpParameters";
             this.grpParameters.Size = new System.Drawing.Size(308, 127);
             this.grpParameters.TabIndex = 13;
             this.grpParameters.TabStop = false;
             // 
+            // picRestButton
+            // 
+            this.picRestButton.BackColor = System.Drawing.Color.White;
+            this.picRestButton.Image = global::PlantSimulator.Properties.Resources.Rest;
+            this.picRestButton.Location = new System.Drawing.Point(9, 5);
+            this.picRestButton.Name = "picRestButton";
+            this.picRestButton.Size = new System.Drawing.Size(72, 50);
+            this.picRestButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picRestButton.TabIndex = 15;
+            this.picRestButton.TabStop = false;
+            this.picRestButton.Click += new System.EventHandler(this.picRestButton_Click);
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label8.BackColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(4, 2);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(658, 57);
+            this.label8.TabIndex = 16;
+            // 
+            // picOpcButton
+            // 
+            this.picOpcButton.BackColor = System.Drawing.Color.White;
+            this.picOpcButton.Image = ((System.Drawing.Image)(resources.GetObject("picOpcButton.Image")));
+            this.picOpcButton.Location = new System.Drawing.Point(93, 5);
+            this.picOpcButton.Name = "picOpcButton";
+            this.picOpcButton.Size = new System.Drawing.Size(75, 50);
+            this.picOpcButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picOpcButton.TabIndex = 17;
+            this.picOpcButton.TabStop = false;
+            this.picOpcButton.Click += new System.EventHandler(this.picOpcButton_Click);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(-2, 131);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(52, 13);
+            this.label9.TabIndex = 19;
+            this.label9.Text = "Enviando";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(51, 131);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(63, 13);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "Recebendo";
+            // 
+            // btnDataReceive
+            // 
+            this.btnDataReceive.BackColor = System.Drawing.Color.DarkRed;
+            this.btnDataReceive.Enabled = false;
+            this.btnDataReceive.FlatAppearance.BorderSize = 0;
+            this.btnDataReceive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDataReceive.Location = new System.Drawing.Point(72, 146);
+            this.btnDataReceive.Name = "btnDataReceive";
+            this.btnDataReceive.Size = new System.Drawing.Size(20, 20);
+            this.btnDataReceive.TabIndex = 18;
+            this.btnDataReceive.UseVisualStyleBackColor = false;
+            // 
+            // btnDataSend
+            // 
+            this.btnDataSend.BackColor = System.Drawing.Color.DarkRed;
+            this.btnDataSend.Enabled = false;
+            this.btnDataSend.FlatAppearance.BorderSize = 0;
+            this.btnDataSend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDataSend.Location = new System.Drawing.Point(14, 146);
+            this.btnDataSend.Name = "btnDataSend";
+            this.btnDataSend.Size = new System.Drawing.Size(20, 20);
+            this.btnDataSend.TabIndex = 18;
+            this.btnDataSend.UseVisualStyleBackColor = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 161);
+            this.ClientSize = new System.Drawing.Size(665, 195);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.btnDataReceive);
+            this.Controls.Add(this.btnDataSend);
+            this.Controls.Add(this.picOpcButton);
+            this.Controls.Add(this.picRestButton);
             this.Controls.Add(this.grpParameters);
             this.Controls.Add(this.grpSistemas);
-            this.Controls.Add(this.btnConnectionPage);
             this.Controls.Add(this.lblSistema);
             this.Controls.Add(this.cbxSitema);
+            this.Controls.Add(this.label8);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "SERVER";
             this.grpPrimeiraOrdem.ResumeLayout(false);
             this.grpPrimeiraOrdem.PerformLayout();
             this.grpSegundaOrdem.ResumeLayout(false);
@@ -481,6 +572,8 @@ namespace PlantSimulator_Server
             this.grpParametrosPrimeiraOrdem.ResumeLayout(false);
             this.grpParametrosPrimeiraOrdem.PerformLayout();
             this.grpParameters.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -497,16 +590,15 @@ namespace PlantSimulator_Server
         private System.Windows.Forms.GroupBox grpPrimeiraOrdem;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.GroupBox grpSegundaOrdem;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox9;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txtbWn2;
+        private System.Windows.Forms.TextBox txtSignal2;
+        private System.Windows.Forms.TextBox textSignal1;
         private System.Windows.Forms.TextBox textBox8;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.TextBox txtKsiWn;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox txtbA;
+        private System.Windows.Forms.TextBox txtWn2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button btnConnectionPage;
         private System.Windows.Forms.GroupBox grpSistemas;
         private System.Windows.Forms.TextBox txtTS;
         private System.Windows.Forms.GroupBox grpParametrosPrimeiraOrdem;
@@ -524,6 +616,13 @@ namespace PlantSimulator_Server
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.GroupBox grpParameters;
         private System.IO.Ports.SerialPort serialPort;
+        private System.Windows.Forms.PictureBox picRestButton;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.PictureBox picOpcButton;
+        private System.Windows.Forms.Label label9;
+        private PlantSimulator.CircularButton btnDataReceive;
+        private System.Windows.Forms.Label label10;
+        internal PlantSimulator.CircularButton btnDataSend;
     }
 }
 
