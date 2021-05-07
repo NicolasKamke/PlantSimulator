@@ -22,6 +22,7 @@ namespace PlantSimulator_Client
 
         LineItem myCurveGraph;
         bool controlLoopTask;
+        bool closeLoop = false;
         bool newStepInGraph = false;        
         double samplingTime = 0;
         int velocityPloting = 100;
@@ -94,6 +95,24 @@ namespace PlantSimulator_Client
             listPoint.Clear();
             myPaneGraph.XAxis.Scale.Min = samplingTime;
         }
+
+        private void btnCloseLoop_Click(object sender, EventArgs e)
+        {
+            
+
+            if (closeLoop)
+            {
+                btnCloseLoop.BackColor = Color.Lime;
+                btnCloseLoop.Text = "Open";
+                closeLoop = !closeLoop;
+            }
+            else
+            {
+                btnCloseLoop.BackColor = Color.Red;
+                btnCloseLoop.Text = "Close";
+                closeLoop = !closeLoop;
+            }
+        }
         #endregion
 
         #region Abrir forms de conexão
@@ -151,7 +170,30 @@ namespace PlantSimulator_Client
         #endregion
         #endregion
 
-        #region Amostragens dos pontos no gráfico
+        #region ZedGraph Plotagem
+
+        public void PlotGraph(double samplingTime, double receiveData)
+        {
+            listPoint.Add(new PointPair(samplingTime, receiveData));
+
+            myPaneGraph.XAxis.Scale.Max = samplingTime;
+
+            myPaneGraph.AxisChange();
+
+            this.zedGraph.Invoke((MethodInvoker)delegate
+            {
+                zedGraph.Refresh();
+
+                zedGraph.Invalidate();
+
+            });
+            
+        }
+
+
+        #endregion
+
+        #region Thread de envio e recebimento de dados
         public async void ContinuousSampling()
         {
             string receive="0";
@@ -160,7 +202,6 @@ namespace PlantSimulator_Client
             controlLoopTask = true;
             double degrauAntigo = Convert.ToDouble(txtStep.Text);
             double newStep = Convert.ToDouble(txtStep.Text);
-
 
             listPoint.Clear();
             myPaneGraph.XAxis.Scale.Min = samplingTime;
@@ -171,15 +212,7 @@ namespace PlantSimulator_Client
 
                 if(selectCommunication == "")
                 {
-                    MessageBox.Show("Selecione um protocolo de comunicação!");
-                    tokenSource.Cancel();
-                    this.grpCommand.Invoke((MethodInvoker)delegate
-                    {
-                        controlLoopTask = false;
-                        btnStart.Visible = true;
-                        btnStep.Visible = false;
-                    });
-
+                    ErrorInThread("Selecione um protocolo de comunicação!");  
                     return;
                 }
                 if (selectCommunication == "rest")
@@ -193,53 +226,52 @@ namespace PlantSimulator_Client
 
                             newStep = Convert.ToDouble(txtStep.Text) - degrauAntigo;
 
-                            await RestClient.Post(newStep.ToString()  + "/" + initialPoint + "/" + samplingTime.ToString());
+                            await RestClient.Post(newStep.ToString() + "/" + initialPoint + "/" + samplingTime.ToString());
 
                             degrauAntigo = Convert.ToDouble(txtStep.Text);
                             newStepInGraph = false;
 
                         }
-                        double x = Convert.ToDouble(receive);
-                        await RestClient.Post(samplingTime.ToString() + "/" + (newStep-x).ToString());
+
+                        double x = closeLoop ? 0 : Convert.ToDouble(receive);
+                        await RestClient.Post(samplingTime.ToString() + "/" + (newStep - x).ToString());
                         receive = await RestClient.Get("output");
                     }
                     catch
                     {
-                        MessageBox.Show("Não foi possível estabelecer conexão com o servidor!");
-                        tokenSource.Cancel();
-                        this.grpCommand.Invoke((MethodInvoker)delegate
-                        {
-                            controlLoopTask = false;
-                            btnStart.Visible = true;
-                            btnStep.Visible = false;
-                        });
-
+                        ErrorInThread("Não foi possível estabelecer conexão com o servidor!");
                         return;
                     }
-                    
                 }
 
-                receiveData = Double.Parse(receive);  
+                receiveData = Double.Parse(receive);
 
-                listPoint.Add(new PointPair(samplingTime,receiveData));
-               
-                myPaneGraph.XAxis.Scale.Max = samplingTime;
-
-                myPaneGraph.AxisChange();
-
-                this.zedGraph.Invoke((MethodInvoker)delegate
-                {
-                    zedGraph.Refresh();
-                    zedGraph.Invalidate();
-
-                });
+                PlotGraph(samplingTime, receiveData);
 
                 samplingTime += 0.1;
              
                 Thread.Sleep(velocityPloting);
             }
         }
+        #endregion
 
+        #region Comunicação
+
+
+        #endregion
+
+        #region Mensagens de Erro
+        public void ErrorInThread(string mensagem)
+        {
+            MessageBox.Show(mensagem);
+            tokenSource.Cancel();
+            this.grpCommand.Invoke((MethodInvoker)delegate
+            {
+                controlLoopTask = false;
+                btnStart.Visible = true;
+                btnStep.Visible = false;
+            });                
+        }
         #endregion
 
         #region Evento de bloqueia digitação de caracteres inválidos
@@ -269,6 +301,10 @@ namespace PlantSimulator_Client
             }
 
         }
+
+
+
+
         #endregion
 
         #region Comunicação Serial
@@ -329,8 +365,6 @@ namespace PlantSimulator_Client
         //}
         #endregion
 
-
-
-      
+       
     }
 }

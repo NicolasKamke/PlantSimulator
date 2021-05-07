@@ -46,9 +46,12 @@ namespace PlantSimulator_Client
             this.picOpcButton = new System.Windows.Forms.PictureBox();
             this.picRestButton = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnCloseLoop = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.grpCommand.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // zedGraph
@@ -96,7 +99,7 @@ namespace PlantSimulator_Client
             this.grpCommand.Controls.Add(this.txtStep);
             this.grpCommand.Controls.Add(this.btnStart);
             this.grpCommand.Controls.Add(this.btnStop);
-            this.grpCommand.Location = new System.Drawing.Point(223, 70);
+            this.grpCommand.Location = new System.Drawing.Point(167, 76);
             this.grpCommand.Name = "grpCommand";
             this.grpCommand.Size = new System.Drawing.Size(149, 110);
             this.grpCommand.TabIndex = 8;
@@ -135,31 +138,34 @@ namespace PlantSimulator_Client
             // 
             // btnConnectionPage
             // 
-            this.btnConnectionPage.Location = new System.Drawing.Point(14, 140);
+            this.btnConnectionPage.Location = new System.Drawing.Point(619, 91);
             this.btnConnectionPage.Name = "btnConnectionPage";
             this.btnConnectionPage.Size = new System.Drawing.Size(79, 26);
             this.btnConnectionPage.TabIndex = 9;
             this.btnConnectionPage.Text = "Conectar";
             this.btnConnectionPage.UseVisualStyleBackColor = true;
+            this.btnConnectionPage.Visible = false;
             // 
             // txtFeedbackGain
             // 
-            this.txtFeedbackGain.Location = new System.Drawing.Point(560, 151);
+            this.txtFeedbackGain.Location = new System.Drawing.Point(27, 72);
             this.txtFeedbackGain.Name = "txtFeedbackGain";
             this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
             this.txtFeedbackGain.TabIndex = 8;
             this.txtFeedbackGain.Text = "1";
+            this.txtFeedbackGain.Visible = false;
             this.txtFeedbackGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
             this.txtFeedbackGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(455, 154);
+            this.label8.Location = new System.Drawing.Point(20, 56);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(105, 13);
+            this.label8.Size = new System.Drawing.Size(102, 13);
             this.label8.TabIndex = 7;
-            this.label8.Text = "Ganho de retroação:";
+            this.label8.Text = "Ganho de retroação";
+            this.label8.Visible = false;
             // 
             // picOpcButton
             // 
@@ -197,16 +203,38 @@ namespace PlantSimulator_Client
             this.label1.Size = new System.Drawing.Size(734, 57);
             this.label1.TabIndex = 19;
             // 
+            // btnCloseLoop
+            // 
+            this.btnCloseLoop.BackColor = System.Drawing.Color.Red;
+            this.btnCloseLoop.Location = new System.Drawing.Point(34, 25);
+            this.btnCloseLoop.Name = "btnCloseLoop";
+            this.btnCloseLoop.Size = new System.Drawing.Size(75, 23);
+            this.btnCloseLoop.TabIndex = 21;
+            this.btnCloseLoop.Text = "Close";
+            this.btnCloseLoop.UseVisualStyleBackColor = false;
+            this.btnCloseLoop.Click += new System.EventHandler(this.btnCloseLoop_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnCloseLoop);
+            this.groupBox1.Controls.Add(this.txtFeedbackGain);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Location = new System.Drawing.Point(12, 76);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(149, 110);
+            this.groupBox1.TabIndex = 22;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Loop";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(746, 555);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.picOpcButton);
             this.Controls.Add(this.picRestButton);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtFeedbackGain);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.btnConnectionPage);
             this.Controls.Add(this.grpCommand);
             this.Controls.Add(this.zedGraph);
@@ -216,8 +244,9 @@ namespace PlantSimulator_Client
             this.grpCommand.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -238,6 +267,8 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.PictureBox picOpcButton;
         private System.Windows.Forms.PictureBox picRestButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnCloseLoop;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 
