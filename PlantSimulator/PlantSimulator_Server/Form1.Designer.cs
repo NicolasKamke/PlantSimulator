@@ -320,8 +320,8 @@ namespace PlantSimulator_Server
             // 
             // grpSistemas
             // 
-            this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
             this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
+            this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
             this.grpSistemas.Location = new System.Drawing.Point(114, 69);
             this.grpSistemas.Name = "grpSistemas";
             this.grpSistemas.Size = new System.Drawing.Size(220, 118);

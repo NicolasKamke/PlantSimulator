@@ -19,29 +19,28 @@ namespace PlantSimulator.Communication.Rest.Models
 
         public void RecebeDados(string input)
         {
-            if ((input.Count(f => (f == '/'))) == 2)
+            if ((input.Count(f => (f == '/'))) == 1)
             {
-                string[] receive = input.Split('/');
+                //string[] status = input.Split('/');
 
-                Step = double.Parse(receive[0]);
-                InitialPoint = double.Parse(receive[1]);
-                InitialStepTime = double.Parse(receive[2]);
+                //if (status[1] == "stop")
+                //    Sistema.status = false;
+                //if (status[1] == "start")
+                //    Sistema.status = true;
 
-                Sistema.step = Step;
-                Sistema.initialPoint = InitialPoint;
-                Sistema.initialStepTime = InitialStepTime;
+                Sistema.entradaOldOld = 0;
+                Sistema.entradaOld = 0;
+              
+                Sistema.saidaOld = 0;
+                Sistema.saidaOldOld = 0;
 
                 return;
             }
 
 
-            else if (input.Count(f => (f == '/')) == 1)
+            else if (input.Count(f => (f == '/')) == 0)
             {
-                string[] receive = input.Split('/');
-
-                Input = double.Parse(receive[0]);
-                Step = double.Parse(receive[1]);
-
+                Input = double.Parse(input);
             }
         }
 

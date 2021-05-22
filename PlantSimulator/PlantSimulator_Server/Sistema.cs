@@ -9,19 +9,20 @@ namespace PlantSimulator_Server
 {
     public static class Sistema
     {
- 
-        static public double step = 1;
-        static public double initialPoint = 0;
-        static public double initialStepTime = 0;
-
+        static public double discretizationTime = 0.1;
+        static public bool status = false;
+        static public double entradaOldOld = 0;
+        static public double entradaOld = 0;
+        static public double saida = 0;
+        static public double saidaOld = 0;
+        static public double saidaOldOld = 0;
+     
         #region Sistema de primeira ordem
         public static class PrimeiraOrdem
         {
             static public double gainK { get; private set; }
             static public double tau { get; private set; }
             static public double a { get; private set; }
-
-
 
             public static void SetParameters(string stringGainK, string stringTau, string stringSignal, string stringA)
             {
@@ -32,29 +33,16 @@ namespace PlantSimulator_Server
             }
 
 
-            public static double RespostaMalhaAberta(double time, double degrau)
+            public static double RespostaMalhaAberta(double entrada)
             {
-                if (time == 0) return 0;
-                step = degrau;
-                return ((step * (((gainK / a) * (1 - Math.Exp(-(a * (time - initialStepTime)) / tau))) / tau)) + initialPoint);
+
+                saida = (gainK / a) * (1 - Math.Exp(-discretizationTime * a)) * entradaOld + Math.Exp(-a * discretizationTime / tau) * saidaOld;
+                                
+                saidaOld = saida;                
+                entradaOld = entrada;
+
+                return saida;
             }
-
-            public static void SetInitialPoint(double initialPointValue)
-            {
-                initialPoint = initialPointValue;
-            }
-
-            public static void SetInitialStepTime(double initialStepPointValue)
-            {
-                initialStepTime = initialStepPointValue;
-            }
-
-            public static void SetStep(double newStep)
-            {
-                step = newStep;
-            }
-
-
         }
         #endregion
 
@@ -74,49 +62,19 @@ namespace PlantSimulator_Server
 
             }
 
-            public static double RespostaMAbertaSubamortecida(double time, double degrau)//RespostaSubamortecida
+            public static double RespostaMalhaAberta(double entrada)
             {
-                if (time == 0) return 0;
-                step = degrau;
-                double x = step * (1 - (((Math.Exp(-ksi * wn * (time - initialStepTime))) / (Math.Sqrt(1 - Math.Pow(ksi, 2)))) * Math.Sin((wn * Math.Sqrt(1 - Math.Pow(ksi, 2))) * (time - initialStepTime) + Math.Atan((Math.Sqrt(1 - Math.Pow(ksi, 2))) / ksi)))) + initialPoint;
-                return x;
-            }
-            public static double RespostaMAbertaCriticamenteAmortecido(double time, double degrau)//RespostaCriticamenteAmortecido
-            {
-                if (time == 0) return 0;
-                step = degrau;
-                double x = step * (1 - Math.Exp(-wn * (time - initialStepTime)) * (1 + wn * (time - initialStepTime))) + initialPoint;
-                return x;
-            }
-            public static double RespostaMAbertaSuperamortecido(double time, double degrau)//RespostaSuperamortecido
-            {
-                if (time == 0) return 0;
-                step = degrau;
-                double S1 = wn * (ksi + Math.Sqrt(Math.Pow(ksi, 2) - 1));
-                double S2 = wn * (ksi - Math.Sqrt(Math.Pow(ksi, 2) - 1));
-                double A = wn / (2 * Math.Sqrt(Math.Pow(ksi, 2) - 1));
-                double B = Math.Exp(-S1 * (time - initialStepTime)) / S1;
-                double C = Math.Exp(-S2 * (time - initialStepTime)) / S2;
-                double H = 1 + A * (B - C);
-                double x = step * H + initialPoint;
-                return x;
-            }
+                saida = (wn / Math.Pow((2 * ksi * wn),2)) * (2 * wn * discretizationTime * ksi - 1 + 1 * Math.Exp(-2 * wn * ksi * discretizationTime)) * entradaOld + (wn / Math.Pow((2 * ksi * wn),2)) * (-(2 * discretizationTime * ksi * wn + 1) * Math.Exp(-2 * discretizationTime * ksi * wn) + 1) * entradaOldOld + 2 * Math.Exp(-wn * ksi * discretizationTime) * Math.Cos(wn * discretizationTime * Math.Sqrt(1 - Math.Pow(ksi, 2))) * saidaOld - Math.Exp(-2 * ksi * wn * discretizationTime) * saidaOldOld;
+                
+                saidaOldOld = saidaOld;
+                saidaOld = saida;
+                
+                entradaOldOld = entradaOld;
+                entradaOld = entrada;
 
+                return saida;
+            }           
 
-            public static void SetInitialPoint(double initialPointValue)
-            {
-                initialPoint = initialPointValue;
-            }
-
-            public static void SetInitialStepTime(double initialStepPointValue)
-            {
-                initialStepTime = initialStepPointValue;
-            }
-
-            public static void SetStep(double newStep)
-            {
-                step = newStep;
-            }
         }
 
         #endregion
@@ -124,26 +82,20 @@ namespace PlantSimulator_Server
         #region Return Responta em Malha Aberta
         public static class Resposta
         {
-            static public double MalhaAberta (double Input, double Step)
+            static public double MalhaAberta (double Input)
             {
+               
+
                 if (MonitoraConexao.sistema == 1)
                 {
 
-                    return PrimeiraOrdem.RespostaMalhaAberta(Input, Step);
+                    return PrimeiraOrdem.RespostaMalhaAberta(Input);
 
 
                 }
                 if (MonitoraConexao.sistema == 2)
                 {
-
-                    if (Sistema.SegundaOrdem.ksi >= 0 && Sistema.SegundaOrdem.ksi < 1)
-                        return Sistema.SegundaOrdem.RespostaMAbertaSubamortecida(Input, Step);
-
-                    else if (Sistema.SegundaOrdem.ksi == 1)
-                        return Sistema.SegundaOrdem.RespostaMAbertaCriticamenteAmortecido(Input, Step);
-
-                    else if (Sistema.SegundaOrdem.ksi > 1)
-                        return Sistema.SegundaOrdem.RespostaMAbertaSuperamortecido(Input, Step);
+                    return SegundaOrdem.RespostaMalhaAberta(Input);
                 }
 
                 return 0;

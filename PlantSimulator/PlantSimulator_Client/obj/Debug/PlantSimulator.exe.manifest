@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PlantSimulator.exe" size="78816">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PlantSimulator.exe" size="84448">
       <assemblyIdentity name="PlantSimulator" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>/e902p0YIQ0AIaSV4GvrRYf58dIS2Q8Ryoc5rXxFfRI=</dsig:DigestValue>
+        <dsig:DigestValue>XZ7zFMySXsLojpvJ2/CV1IaS6HYocxCrg0v8f8onYoE=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

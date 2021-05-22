@@ -48,10 +48,22 @@ namespace PlantSimulator_Client
             this.label1 = new System.Windows.Forms.Label();
             this.btnCloseLoop = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblMalha = new System.Windows.Forms.Label();
+            this.grpCSV = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnGerarCSV = new System.Windows.Forms.Button();
+            this.txtPasso = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtTermino = new System.Windows.Forms.TextBox();
+            this.txtInicio = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtWindowTime = new System.Windows.Forms.TextBox();
             this.grpCommand.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.grpCSV.SuspendLayout();
             this.SuspendLayout();
             // 
             // zedGraph
@@ -99,7 +111,7 @@ namespace PlantSimulator_Client
             this.grpCommand.Controls.Add(this.txtStep);
             this.grpCommand.Controls.Add(this.btnStart);
             this.grpCommand.Controls.Add(this.btnStop);
-            this.grpCommand.Location = new System.Drawing.Point(167, 76);
+            this.grpCommand.Location = new System.Drawing.Point(175, 76);
             this.grpCommand.Name = "grpCommand";
             this.grpCommand.Size = new System.Drawing.Size(149, 110);
             this.grpCommand.TabIndex = 8;
@@ -138,7 +150,7 @@ namespace PlantSimulator_Client
             // 
             // btnConnectionPage
             // 
-            this.btnConnectionPage.Location = new System.Drawing.Point(619, 91);
+            this.btnConnectionPage.Location = new System.Drawing.Point(502, 160);
             this.btnConnectionPage.Name = "btnConnectionPage";
             this.btnConnectionPage.Size = new System.Drawing.Size(79, 26);
             this.btnConnectionPage.TabIndex = 9;
@@ -148,7 +160,7 @@ namespace PlantSimulator_Client
             // 
             // txtFeedbackGain
             // 
-            this.txtFeedbackGain.Location = new System.Drawing.Point(27, 72);
+            this.txtFeedbackGain.Location = new System.Drawing.Point(27, 78);
             this.txtFeedbackGain.Name = "txtFeedbackGain";
             this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
             this.txtFeedbackGain.TabIndex = 8;
@@ -160,7 +172,7 @@ namespace PlantSimulator_Client
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(20, 56);
+            this.label8.Location = new System.Drawing.Point(20, 62);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(102, 13);
             this.label8.TabIndex = 7;
@@ -205,17 +217,18 @@ namespace PlantSimulator_Client
             // 
             // btnCloseLoop
             // 
-            this.btnCloseLoop.BackColor = System.Drawing.Color.Red;
-            this.btnCloseLoop.Location = new System.Drawing.Point(34, 25);
+            this.btnCloseLoop.BackColor = System.Drawing.Color.Lime;
+            this.btnCloseLoop.Location = new System.Drawing.Point(34, 31);
             this.btnCloseLoop.Name = "btnCloseLoop";
             this.btnCloseLoop.Size = new System.Drawing.Size(75, 23);
             this.btnCloseLoop.TabIndex = 21;
-            this.btnCloseLoop.Text = "Close";
+            this.btnCloseLoop.Text = "Open";
             this.btnCloseLoop.UseVisualStyleBackColor = false;
             this.btnCloseLoop.Click += new System.EventHandler(this.btnCloseLoop_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblMalha);
             this.groupBox1.Controls.Add(this.btnCloseLoop);
             this.groupBox1.Controls.Add(this.txtFeedbackGain);
             this.groupBox1.Controls.Add(this.label8);
@@ -226,11 +239,125 @@ namespace PlantSimulator_Client
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Loop";
             // 
+            // lblMalha
+            // 
+            this.lblMalha.AutoSize = true;
+            this.lblMalha.Location = new System.Drawing.Point(31, 16);
+            this.lblMalha.Name = "lblMalha";
+            this.lblMalha.Size = new System.Drawing.Size(81, 13);
+            this.lblMalha.TabIndex = 22;
+            this.lblMalha.Text = "Malha Fechada";
+            // 
+            // grpCSV
+            // 
+            this.grpCSV.Controls.Add(this.label4);
+            this.grpCSV.Controls.Add(this.btnGerarCSV);
+            this.grpCSV.Controls.Add(this.txtPasso);
+            this.grpCSV.Controls.Add(this.label3);
+            this.grpCSV.Controls.Add(this.label2);
+            this.grpCSV.Controls.Add(this.txtTermino);
+            this.grpCSV.Controls.Add(this.txtInicio);
+            this.grpCSV.Location = new System.Drawing.Point(338, 76);
+            this.grpCSV.Name = "grpCSV";
+            this.grpCSV.Size = new System.Drawing.Size(149, 110);
+            this.grpCSV.TabIndex = 23;
+            this.grpCSV.TabStop = false;
+            this.grpCSV.Text = "CSV";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(11, 60);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(58, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Passo (ms)";
+            // 
+            // btnGerarCSV
+            // 
+            this.btnGerarCSV.Location = new System.Drawing.Point(78, 61);
+            this.btnGerarCSV.Name = "btnGerarCSV";
+            this.btnGerarCSV.Size = new System.Drawing.Size(60, 35);
+            this.btnGerarCSV.TabIndex = 2;
+            this.btnGerarCSV.Text = "Gerar";
+            this.btnGerarCSV.UseVisualStyleBackColor = true;
+            this.btnGerarCSV.Click += new System.EventHandler(this.btnGerarCSV_Click);
+            // 
+            // txtPasso
+            // 
+            this.txtPasso.Location = new System.Drawing.Point(11, 76);
+            this.txtPasso.Name = "txtPasso";
+            this.txtPasso.Size = new System.Drawing.Size(60, 20);
+            this.txtPasso.TabIndex = 2;
+            this.txtPasso.Text = "100";
+            this.txtPasso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtPasso.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(78, 21);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Término (s)";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(11, 21);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Início (s)";
+            // 
+            // txtTermino
+            // 
+            this.txtTermino.Location = new System.Drawing.Point(78, 37);
+            this.txtTermino.Name = "txtTermino";
+            this.txtTermino.Size = new System.Drawing.Size(60, 20);
+            this.txtTermino.TabIndex = 0;
+            this.txtTermino.Text = "10";
+            this.txtTermino.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtTermino.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // txtInicio
+            // 
+            this.txtInicio.Location = new System.Drawing.Point(11, 37);
+            this.txtInicio.Name = "txtInicio";
+            this.txtInicio.Size = new System.Drawing.Size(60, 20);
+            this.txtInicio.TabIndex = 0;
+            this.txtInicio.Text = "0";
+            this.txtInicio.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtInicio.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(624, 76);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(110, 13);
+            this.label5.TabIndex = 24;
+            this.label5.Text = "Janela de tempo (min)";
+            // 
+            // txtWindowTime
+            // 
+            this.txtWindowTime.Location = new System.Drawing.Point(627, 92);
+            this.txtWindowTime.Name = "txtWindowTime";
+            this.txtWindowTime.Size = new System.Drawing.Size(100, 20);
+            this.txtWindowTime.TabIndex = 25;
+            this.txtWindowTime.Text = "2";
+            this.txtWindowTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtWindowTime.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(746, 555);
+            this.Controls.Add(this.txtWindowTime);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.grpCSV);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.picOpcButton);
             this.Controls.Add(this.picRestButton);
@@ -246,7 +373,10 @@ namespace PlantSimulator_Client
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.grpCSV.ResumeLayout(false);
+            this.grpCSV.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -269,6 +399,17 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnCloseLoop;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpCSV;
+        private System.Windows.Forms.TextBox txtTermino;
+        private System.Windows.Forms.TextBox txtInicio;
+        private System.Windows.Forms.Button btnGerarCSV;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtPasso;
+        private System.Windows.Forms.Label lblMalha;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtWindowTime;
     }
 }
 

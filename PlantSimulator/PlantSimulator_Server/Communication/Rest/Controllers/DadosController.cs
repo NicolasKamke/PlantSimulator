@@ -28,7 +28,7 @@ namespace PlantSimulator.Communication.Rest.Controllers
 
             data.RecebeDados(input);
            
-            data.Output = Sistema.Resposta.MalhaAberta(data.Input, data.Step);
+            data.Output = Sistema.Resposta.MalhaAberta(data.Input);
 
         }
     }

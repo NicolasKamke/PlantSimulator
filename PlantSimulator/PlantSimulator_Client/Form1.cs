@@ -2,18 +2,22 @@
 using PlantSimulator.Communication.Rest;
 using System;
 using System.Drawing;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
+using System.Xml.Linq;
+using System.IO;
+using System.Text;
 
 namespace PlantSimulator_Client
 {
     public partial class Form1 : Form
     {
         #region Inicialização de variáveis globais
+        string csvPath = AppDomain.CurrentDomain.BaseDirectory + "\\plantResponse.csv";
+
         CancellationTokenSource tokenSource = null;
 
         GraphPane myPaneGraph = new GraphPane();
@@ -21,19 +25,21 @@ namespace PlantSimulator_Client
         PointPairList listPoint = new PointPairList();
 
         LineItem myCurveGraph;
+        double graphWindowTime;
         bool controlLoopTask;
         bool closeLoop = false;
-        bool newStepInGraph = false;        
+        bool newStepInGraph = false;
         double samplingTime = 0;
         int velocityPloting = 100;
         string selectCommunication = "";
+        double step = 1;
 
         #endregion
 
         #region Initialize Components
         public Form1()
         {
-            InitializeComponent();            
+            InitializeComponent();
             ConfigureGraph();
             btnStep.Visible = false;
 
@@ -55,12 +61,6 @@ namespace PlantSimulator_Client
 
             myPaneGraph.YAxis.MajorGrid.IsVisible = true;
 
-            //myPaneGraph.YAxis.Scale.Format = "F2";
-
-            //myPaneGraph.YAxis.Scale.MagAuto = false;
-
-            //myPaneGraph.YAxis.ScaleFormatEvent += new Axis.ScaleFormatHandler(YAxis_ScaleFormatEvent); 
-
             myCurveGraph = myPaneGraph.AddCurve(null, listPoint, Color.Red, SymbolType.None);
 
             myCurveGraph.Line.Width = 3;
@@ -74,15 +74,26 @@ namespace PlantSimulator_Client
             tokenSource = new CancellationTokenSource();
             Task.Run(() => ContinuousSampling(), tokenSource.Token);
             btnStep.Visible = true;
+            txtWindowTime.Enabled = false;
+
+            graphWindowTime = Double.Parse(txtWindowTime.Text);
         }
 
         private async void btnStop_Click(object sender, EventArgs e)
         {
-            tokenSource.Cancel();
-            await RestClient.Post("0/0/0");
             controlLoopTask = false;
+            tokenSource.Cancel(); 
             btnStart.Visible = true;
             btnStep.Visible = false;
+            try
+            {
+                await RestClient.Post("0/0");
+            }
+            catch
+            {
+                ErrorInThread("ERROR: Sem conexão com o servidor");
+            }
+            txtWindowTime.Enabled = true;
         }
 
         private void btnStep_Click(object sender, EventArgs e)
@@ -98,18 +109,20 @@ namespace PlantSimulator_Client
 
         private void btnCloseLoop_Click(object sender, EventArgs e)
         {
-            
+
 
             if (closeLoop)
             {
                 btnCloseLoop.BackColor = Color.Lime;
                 btnCloseLoop.Text = "Open";
+                lblMalha.Text = "Malha Fechada";
                 closeLoop = !closeLoop;
             }
             else
             {
                 btnCloseLoop.BackColor = Color.Red;
                 btnCloseLoop.Text = "Close";
+                lblMalha.Text = "Malha Aberta";
                 closeLoop = !closeLoop;
             }
         }
@@ -126,17 +139,17 @@ namespace PlantSimulator_Client
 
         private void picRestButton_Click(object sender, EventArgs e)
         {
-            if (selectCommunication == "" || selectCommunication == "rest") 
-            { 
+            if (selectCommunication == "" || selectCommunication == "rest")
+            {
                 if (picRestButton.BackColor == Color.Green)
                 {
                     picRestButton.BackColor = Color.White;
-                    selectCommunication = "";                
+                    selectCommunication = "";
                 }
                 else
                 {
                     picRestButton.BackColor = Color.Green;
-                    selectCommunication = "rest";                
+                    selectCommunication = "rest";
                 }
             }
 
@@ -153,7 +166,7 @@ namespace PlantSimulator_Client
         private void picOpcButton_Click(object sender, EventArgs e)
         {
             if (selectCommunication == "" || selectCommunication == "opc")
-            {            
+            {
                 if (picOpcButton.BackColor == Color.Green)
                 {
                     picOpcButton.BackColor = Color.White;
@@ -180,6 +193,17 @@ namespace PlantSimulator_Client
 
             myPaneGraph.AxisChange();
 
+          
+
+            if (myCurveGraph.NPts == (int)(graphWindowTime*60/0.1))
+            {
+                myCurveGraph.RemovePoint(0);
+                myPaneGraph.XAxis.Scale.Min += 0.1;
+            }
+                
+
+           
+
             this.zedGraph.Invoke((MethodInvoker)delegate
             {
                 zedGraph.Refresh();
@@ -187,7 +211,7 @@ namespace PlantSimulator_Client
                 zedGraph.Invalidate();
 
             });
-            
+
         }
 
 
@@ -196,51 +220,42 @@ namespace PlantSimulator_Client
         #region Thread de envio e recebimento de dados
         public async void ContinuousSampling()
         {
-            string receive="0";
-            double receiveData=0;
+            string receive = "0";  
+            double receiveData = 0;
             samplingTime = 0;
             controlLoopTask = true;
-            double degrauAntigo = Convert.ToDouble(txtStep.Text);
-            double newStep = Convert.ToDouble(txtStep.Text);
 
             listPoint.Clear();
             myPaneGraph.XAxis.Scale.Min = samplingTime;
-            //ConfigureGraph();
+
+            try
+            {
+                await RestClient.Post("0/0");
+            }                
+            catch
+            {
+                ErrorInThread("ERROR: Verifique a comunicação");
+            }
 
             while (controlLoopTask)
-            {                
+            {
 
-                if(selectCommunication == "")
+                if (selectCommunication == "")
                 {
-                    ErrorInThread("Selecione um protocolo de comunicação!");  
+                    ErrorInThread("Selecione um protocolo de comunicação!");
                     return;
                 }
                 if (selectCommunication == "rest")
                 {
                     try
-                    {
-                        if (newStepInGraph)
-                        {
-                            await RestClient.Post(samplingTime.ToString() + "/" + newStep.ToString());
-                            string initialPoint = await RestClient.Get("output");
+                    {                     
+                        receive = await RestCommunication(receive);
 
-                            newStep = Convert.ToDouble(txtStep.Text) - degrauAntigo;
-
-                            await RestClient.Post(newStep.ToString() + "/" + initialPoint + "/" + samplingTime.ToString());
-
-                            degrauAntigo = Convert.ToDouble(txtStep.Text);
-                            newStepInGraph = false;
-
-                        }
-
-                        double x = closeLoop ? 0 : Convert.ToDouble(receive);
-                        await RestClient.Post(samplingTime.ToString() + "/" + (newStep - x).ToString());
-                        receive = await RestClient.Get("output");
                     }
                     catch
                     {
                         ErrorInThread("Não foi possível estabelecer conexão com o servidor!");
-                        return;
+                        
                     }
                 }
 
@@ -249,20 +264,53 @@ namespace PlantSimulator_Client
                 PlotGraph(samplingTime, receiveData);
 
                 samplingTime += 0.1;
-             
+
                 Thread.Sleep(velocityPloting);
             }
+            
         }
         #endregion
 
-        #region Comunicação
+        #region Comunicação  
+        
 
+        public async Task<string> RestCommunication(string receive)
+        {
+            
+            double erro;
+
+            try
+            {
+                double x = closeLoop ? 0 : Convert.ToDouble(receive);
+                erro = (step - x);
+
+                await RestClient.Post((erro).ToString());
+                
+
+                if (newStepInGraph)
+                {
+                    step = Convert.ToDouble(txtStep.Text);
+
+                    await RestClient.Post((step - erro).ToString());                    
+
+                    newStepInGraph = false;
+
+                }
+                return await RestClient.Get("output");
+
+            }
+            catch
+            {
+                ErrorInThread("Não foi possível estabelecer conexão com o servidor!");
+                return null;
+            }            
+        }
 
         #endregion
 
         #region Mensagens de Erro
         public void ErrorInThread(string mensagem)
-        {
+        {           
             MessageBox.Show(mensagem);
             tokenSource.Cancel();
             this.grpCommand.Invoke((MethodInvoker)delegate
@@ -272,7 +320,13 @@ namespace PlantSimulator_Client
                 btnStep.Visible = false;
             });                
         }
-        #endregion
+        public void ErrorWriteFile(string mensagem)
+        {           
+            MessageBox.Show(mensagem);
+        }
+
+
+            #endregion
 
         #region Evento de bloqueia digitação de caracteres inválidos
         private void BlockNumberCharacteres_KeyPress(object sender, KeyPressEventArgs e)
@@ -282,25 +336,46 @@ namespace PlantSimulator_Client
             e.Handled = !regex.IsMatch(e.KeyChar.ToString());
         }
 
-        private void BlockSignalCharacteres_KeyPress(object sender, KeyPressEventArgs e)
+        private void BlockNumberAndSignalsCharacteres_KeyPress(object sender, KeyPressEventArgs e)
         {
-            Regex regex = new Regex("[\b+-]");
+            Regex regex = new Regex("[0-9\b,]");
 
-            e.Handled = !regex.IsMatch(e.KeyChar.ToString());  
+            e.Handled = !regex.IsMatch(e.KeyChar.ToString());
         }
+
+
 
         #endregion
 
         #region Evento de verificação de campos vazios
         private void emptyTxtBoxVerify(object sender, EventArgs e)
-        {
+        {     
             if (sender.ToString().Split(':')[1].Trim() == "")
             {
-                ((TextBox)sender).Text = "1";
+                switch (((TextBox)sender).Name)
+                {
+                    case "txtInicio":
+                        ((TextBox)sender).Text = "0";
+                        break;
+                    case "txtWindowTime":
+                        ((TextBox)sender).Text = "2";
+                        break;
+                    case "txtTermino":
+                        ((TextBox)sender).Text = "10";
+                        break;
+                    case "txtPasso":
+                        ((TextBox)sender).Text = "100";
+                        break;
+                    default:
+                        ((TextBox)sender).Text = "1";
+                        break;
+                }
+               
                 
             }
 
         }
+
 
 
 
@@ -365,6 +440,43 @@ namespace PlantSimulator_Client
         //}
         #endregion
 
-       
+        #region Gerar CSV
+        private async void btnGerarCSV_Click(object sender, EventArgs e)
+        {
+            string receive = "0";
+            StringBuilder csvContent = new StringBuilder();
+            csvContent.AppendLine("r(t) - SetPoint; t - Tempo;e(t) - Erro;u(t) - Saído do Controlador;y(t) - Variável de Processo");
+            
+            for (double x = Convert.ToDouble(txtInicio.Text); x < Convert.ToDouble(txtTermino.Text) ; x += (Convert.ToDouble(txtPasso.Text)*Math.Pow(10,-3)))
+            {
+                samplingTime = x;
+                receive = await RestCommunication(receive);
+                double error = Convert.ToDouble(txtStep.Text) - Convert.ToDouble(receive);
+                
+                string step = txtStep.Text.Replace(',','.');
+                string time = Math.Round(x,10).ToString().Replace(',', '.');
+                string erro = error.ToString().Replace(',', '.');
+                string saidaPlanta = receive.Replace(',', '.');
+
+                csvContent.AppendLine(step + ";" + time + ";" + erro + ";" + erro + ";" + saidaPlanta);
+                
+            }            
+
+            try
+            {
+                File.WriteAllText(csvPath, csvContent.ToString(), Encoding.GetEncoding(28591));
+                await RestClient.Post("0/0");
+            }
+
+            catch
+            {
+                ErrorWriteFile("O arquivo já está sendo usado por outro processo");
+            }
+
+
+        }
+        #endregion
+
+    
     }
 }
