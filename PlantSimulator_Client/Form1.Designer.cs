@@ -46,8 +46,8 @@ namespace PlantSimulator_Client
             this.picOpcButton = new System.Windows.Forms.PictureBox();
             this.picRestButton = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnCloseLoop = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnCloseLoop = new System.Windows.Forms.Button();
             this.lblMalha = new System.Windows.Forms.Label();
             this.grpCSV = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -60,13 +60,13 @@ namespace PlantSimulator_Client
             this.label5 = new System.Windows.Forms.Label();
             this.txtWindowTime = new System.Windows.Forms.TextBox();
             this.grpController = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtKp = new System.Windows.Forms.TextBox();
-            this.txtKi = new System.Windows.Forms.TextBox();
-            this.txtKd = new System.Windows.Forms.TextBox();
             this.btnController = new System.Windows.Forms.Button();
+            this.txtKd = new System.Windows.Forms.TextBox();
+            this.txtKi = new System.Windows.Forms.TextBox();
+            this.txtKp = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.grpCommand.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
@@ -174,7 +174,6 @@ namespace PlantSimulator_Client
             this.txtFeedbackGain.Size = new System.Drawing.Size(89, 20);
             this.txtFeedbackGain.TabIndex = 8;
             this.txtFeedbackGain.Text = "1";
-            this.txtFeedbackGain.Visible = false;
             this.txtFeedbackGain.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
             this.txtFeedbackGain.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -186,7 +185,6 @@ namespace PlantSimulator_Client
             this.label8.Size = new System.Drawing.Size(102, 13);
             this.label8.TabIndex = 7;
             this.label8.Text = "Ganho de retroação";
-            this.label8.Visible = false;
             // 
             // picOpcButton
             // 
@@ -224,21 +222,10 @@ namespace PlantSimulator_Client
             this.label1.Size = new System.Drawing.Size(729, 57);
             this.label1.TabIndex = 19;
             // 
-            // btnCloseLoop
-            // 
-            this.btnCloseLoop.BackColor = System.Drawing.Color.Lime;
-            this.btnCloseLoop.Location = new System.Drawing.Point(34, 31);
-            this.btnCloseLoop.Name = "btnCloseLoop";
-            this.btnCloseLoop.Size = new System.Drawing.Size(75, 23);
-            this.btnCloseLoop.TabIndex = 21;
-            this.btnCloseLoop.Text = "Open";
-            this.btnCloseLoop.UseVisualStyleBackColor = false;
-            this.btnCloseLoop.Click += new System.EventHandler(this.btnCloseLoop_Click);
-            // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.lblMalha);
             this.groupBox1.Controls.Add(this.btnCloseLoop);
+            this.groupBox1.Controls.Add(this.lblMalha);
             this.groupBox1.Controls.Add(this.txtFeedbackGain);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Location = new System.Drawing.Point(12, 76);
@@ -248,14 +235,25 @@ namespace PlantSimulator_Client
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Loop";
             // 
+            // btnCloseLoop
+            // 
+            this.btnCloseLoop.Location = new System.Drawing.Point(34, 32);
+            this.btnCloseLoop.Name = "btnCloseLoop";
+            this.btnCloseLoop.Size = new System.Drawing.Size(75, 23);
+            this.btnCloseLoop.TabIndex = 27;
+            this.btnCloseLoop.Text = "Open";
+            this.btnCloseLoop.UseVisualStyleBackColor = true;
+            this.btnCloseLoop.Click += new System.EventHandler(this.btnCloseLoop_Click);
+            // 
             // lblMalha
             // 
-            this.lblMalha.AutoSize = true;
+            this.lblMalha.BackColor = System.Drawing.Color.Red;
             this.lblMalha.Location = new System.Drawing.Point(31, 16);
             this.lblMalha.Name = "lblMalha";
             this.lblMalha.Size = new System.Drawing.Size(81, 13);
             this.lblMalha.TabIndex = 22;
             this.lblMalha.Text = "Malha Fechada";
+            this.lblMalha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // grpCSV
             // 
@@ -298,7 +296,7 @@ namespace PlantSimulator_Client
             this.txtPasso.Name = "txtPasso";
             this.txtPasso.Size = new System.Drawing.Size(60, 20);
             this.txtPasso.TabIndex = 2;
-            this.txtPasso.Text = "100";
+            this.txtPasso.Text = "10";
             this.txtPasso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
             this.txtPasso.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -375,52 +373,16 @@ namespace PlantSimulator_Client
             this.grpController.TabStop = false;
             this.grpController.Text = "Controlador";
             // 
-            // label6
+            // btnController
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 28);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(20, 13);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Kp";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 55);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(16, 13);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "Ki";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 82);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(20, 13);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "Kd";
-            // 
-            // txtKp
-            // 
-            this.txtKp.Location = new System.Drawing.Point(29, 25);
-            this.txtKp.Name = "txtKp";
-            this.txtKp.Size = new System.Drawing.Size(45, 20);
-            this.txtKp.TabIndex = 3;
-            this.txtKp.Text = "0";
-            this.txtKp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
-            this.txtKp.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
-            // 
-            // txtKi
-            // 
-            this.txtKi.Location = new System.Drawing.Point(29, 52);
-            this.txtKi.Name = "txtKi";
-            this.txtKi.Size = new System.Drawing.Size(45, 20);
-            this.txtKi.TabIndex = 4;
-            this.txtKi.Text = "0";
-            this.txtKi.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
-            this.txtKi.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            this.btnController.BackColor = System.Drawing.Color.Red;
+            this.btnController.Location = new System.Drawing.Point(85, 25);
+            this.btnController.Name = "btnController";
+            this.btnController.Size = new System.Drawing.Size(58, 75);
+            this.btnController.TabIndex = 6;
+            this.btnController.Text = "OFF";
+            this.btnController.UseVisualStyleBackColor = false;
+            this.btnController.Click += new System.EventHandler(this.btnController_Click);
             // 
             // txtKd
             // 
@@ -432,16 +394,52 @@ namespace PlantSimulator_Client
             this.txtKd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
             this.txtKd.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
-            // btnController
+            // txtKi
             // 
-            this.btnController.BackColor = System.Drawing.Color.Red;
-            this.btnController.Location = new System.Drawing.Point(85, 25);
-            this.btnController.Name = "btnController";
-            this.btnController.Size = new System.Drawing.Size(58, 75);
-            this.btnController.TabIndex = 6;
-            this.btnController.Text = "OFF";
-            this.btnController.UseVisualStyleBackColor = false;
-            this.btnController.Click += new System.EventHandler(this.btnController_Click);
+            this.txtKi.Location = new System.Drawing.Point(29, 52);
+            this.txtKi.Name = "txtKi";
+            this.txtKi.Size = new System.Drawing.Size(45, 20);
+            this.txtKi.TabIndex = 4;
+            this.txtKi.Text = "0";
+            this.txtKi.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtKi.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // txtKp
+            // 
+            this.txtKp.Location = new System.Drawing.Point(29, 25);
+            this.txtKp.Name = "txtKp";
+            this.txtKp.Size = new System.Drawing.Size(45, 20);
+            this.txtKp.TabIndex = 3;
+            this.txtKp.Text = "0";
+            this.txtKp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtKp.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 82);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(20, 13);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Kd";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 55);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(16, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Ki";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 28);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(20, 13);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "Kp";
             // 
             // Form1
             // 
@@ -493,7 +491,6 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.PictureBox picOpcButton;
         private System.Windows.Forms.PictureBox picRestButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnCloseLoop;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox grpCSV;
         private System.Windows.Forms.TextBox txtTermino;
@@ -514,6 +511,7 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnController;
+        private System.Windows.Forms.Button btnCloseLoop;
     }
 }
 

@@ -288,6 +288,7 @@ namespace PlantSimulator_Server
             this.txtbA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtbA.Location = new System.Drawing.Point(24, 65);
             this.txtbA.Name = "txtbA";
+            this.txtbA.ReadOnly = true;
             this.txtbA.Size = new System.Drawing.Size(23, 20);
             this.txtbA.TabIndex = 5;
             this.txtbA.Text = "1";
@@ -489,7 +490,7 @@ namespace PlantSimulator_Server
             this.label8.BackColor = System.Drawing.Color.White;
             this.label8.Location = new System.Drawing.Point(4, 2);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(658, 57);
+            this.label8.Size = new System.Drawing.Size(329, 57);
             this.label8.TabIndex = 16;
             // 
             // picOpcButton
@@ -550,7 +551,7 @@ namespace PlantSimulator_Server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(665, 195);
+            this.ClientSize = new System.Drawing.Size(336, 195);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.btnDataReceive);
@@ -596,7 +597,6 @@ namespace PlantSimulator_Server
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.TextBox txtKsiWn;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox txtbA;
         private System.Windows.Forms.TextBox txtWn2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox grpSistemas;
@@ -623,6 +623,7 @@ namespace PlantSimulator_Server
         private PlantSimulator.CircularButton btnDataReceive;
         private System.Windows.Forms.Label label10;
         internal PlantSimulator.CircularButton btnDataSend;
+        private System.Windows.Forms.TextBox txtbA;
     }
 }
 

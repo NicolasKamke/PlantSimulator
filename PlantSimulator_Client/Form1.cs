@@ -16,6 +16,10 @@ namespace PlantSimulator_Client
     public partial class Form1 : Form
     {
         #region Inicialização de variáveis globais
+
+        int velocityPloting = 0;
+        double graphIncrement = 0.01;
+
         string csvPath = AppDomain.CurrentDomain.BaseDirectory + "\\plantResponse.csv";
 
         CancellationTokenSource tokenSource = null;
@@ -29,11 +33,10 @@ namespace PlantSimulator_Client
         bool controlLoopTask;
         bool closeLoop = false;
         bool newStepInGraph = false;
-        double samplingTime = 0;
-        int velocityPloting = 57;
+        double samplingTime;        
         string selectCommunication = "";
         double step = 1;
-
+        double erro;
         double controllerAction;
         bool controller = false;
 
@@ -58,7 +61,7 @@ namespace PlantSimulator_Client
 
             myPaneGraph.XAxis.Title.Text = "t(s)";
 
-            myPaneGraph.YAxis.Title.Text = "C(t)";
+            myPaneGraph.YAxis.Title.Text = "C(t)";            
 
             myPaneGraph.XAxis.MajorGrid.IsVisible = true;
 
@@ -90,14 +93,14 @@ namespace PlantSimulator_Client
             tokenSource.Cancel(); 
             btnStart.Visible = true;
             btnStep.Visible = false;
-            try
-            {
-                await RestClient.Post("0/0");
-            }
-            catch
-            {
-                ErrorInThread("ERROR: Sem conexão com o servidor");
-            }
+            //try
+            //{
+            //    await RestClient.Post("0/0");
+            //}
+            //catch
+            //{
+            //    ErrorInThread("ERROR: Sem conexão com o servidor");
+            //}
 
             txtWindowTime.Enabled = true;
             grpController.Enabled = true;
@@ -120,16 +123,16 @@ namespace PlantSimulator_Client
 
             if (closeLoop)
             {
-                btnCloseLoop.BackColor = Color.Lime;
+                lblMalha.BackColor = Color.Red;             
                 btnCloseLoop.Text = "Open";
-                lblMalha.Text = "Malha Fechada";
+                lblMalha.Text = "Malha Fechada";             
                 closeLoop = !closeLoop;
             }
             else
             {
-                btnCloseLoop.BackColor = Color.Red;
+                lblMalha.BackColor = Color.Lime;                
                 btnCloseLoop.Text = "Close";
-                lblMalha.Text = "Malha Aberta";
+                lblMalha.Text = "Malha Aberta";                
                 closeLoop = !closeLoop;
             }
         }
@@ -212,21 +215,23 @@ namespace PlantSimulator_Client
         public void PlotGraph(double samplingTime, double receiveData)
         {
             listPoint.Add(new PointPair(samplingTime, receiveData));
-
+           
             myPaneGraph.XAxis.Scale.Max = samplingTime;
 
             myPaneGraph.AxisChange();
-
           
 
-            if (myCurveGraph.NPts == (int)(graphWindowTime*60/0.1))
-            {
+            if (myCurveGraph.NPts == (int)(graphWindowTime*60/ graphIncrement))
+            {                
                 myCurveGraph.RemovePoint(0);
-                myPaneGraph.XAxis.Scale.Min += 0.1;
+                myPaneGraph.XAxis.Scale.Min += graphIncrement;
             }
-                
+            else
+            {
+                myPaneGraph.XAxis.Scale.Min = 0;
+            }
 
-           
+            //myPaneGraph.YAxis.Scale.Max = receiveData*1.5;
 
             this.zedGraph.Invoke((MethodInvoker)delegate
             {
@@ -244,11 +249,13 @@ namespace PlantSimulator_Client
         #region Thread de envio e recebimento de dados
         public async void ContinuousSampling()
         {
-            string receive = "0";  
+            string receive = "0";
+            string receiveOld = "0";
             double receiveData = 0;
-            samplingTime = 0;
+            samplingTime = -graphIncrement;
             controllerAction = 0;
-            
+            erro = 0;
+
             controlLoopTask = true;
             step = Double.Parse(txtStep.Text);
 
@@ -275,8 +282,10 @@ namespace PlantSimulator_Client
                 if (selectCommunication == "rest")
                 {
                     try
-                    {                     
-                        receive = await RestCommunication(receive);
+                    {
+                        
+                        receive = await RestCommunication(receiveOld);
+                        receiveOld = receive;
 
                     }
                     catch
@@ -288,16 +297,11 @@ namespace PlantSimulator_Client
                 
                 receiveData = Double.Parse(receive);
 
-                PlotGraph(samplingTime, receiveData);
-
-                samplingTime += 0.1;
-
-                
+                PlotGraph(samplingTime, receiveData);                             
                
             }
 
-    
-
+           
 
         }
         #endregion
@@ -308,8 +312,6 @@ namespace PlantSimulator_Client
 
         public async Task<string> RestCommunication(string receive)
         {
-            
-            double erro = 0;
             double proporcional = 0;
             double integral = 0;
             double derivativo = 0;
@@ -317,7 +319,7 @@ namespace PlantSimulator_Client
 
             try
             {
-                double x = closeLoop ? 0 : Convert.ToDouble(receive);
+                double x = closeLoop ? 0 : Convert.ToDouble(receive)* Convert.ToDouble(txtFeedbackGain.Text);
                 erro = (step - x);
 
                 controllerAction = erro;
@@ -326,8 +328,7 @@ namespace PlantSimulator_Client
                 {
                     if (txtKp.Text != "0")
                         proporcional = erro * Double.Parse(txtKp.Text);
-                    if (txtKi.Text != "0")
-                        //integral = Double.Parse(txtKi.Text)*erro*0.1 + saidaOld;
+                    if (txtKi.Text != "0")                    
                         integral = Double.Parse(txtKi.Text) * (saidaIntegralOld + erro * 0.1);
                     if (txtKd.Text != "0")
                         derivativo = Double.Parse(txtKd.Text)*((erro-entradaOld)/0.1);
@@ -353,6 +354,8 @@ namespace PlantSimulator_Client
                 }
 
                 Thread.Sleep(velocityPloting);
+
+                samplingTime += graphIncrement;
 
                 return await RestClient.Get("output");
 
@@ -510,29 +513,50 @@ namespace PlantSimulator_Client
         #region Gerar CSV
         private async void btnGerarCSV_Click(object sender, EventArgs e)
         {
+            try
+            {
+                await RestClient.Post("0/0");
+            }
+            catch
+            {
+                ErrorInThread("ERROR: Verifique a comunicação");
+            }
+
+            grpCommand.Enabled = false;
+            grpController.Enabled = false;
+            listPoint.Clear();
+            samplingTime = -2* graphIncrement;
+            erro = 0;
             string receive = "0";
+            string receiveOld = "0";
             StringBuilder csvContent = new StringBuilder();
             csvContent.AppendLine("r(t) - SetPoint; t - Tempo;e(t) - Erro;u(t) - Saído do Controlador;y(t) - Variável de Processo");
             
             for (double x = Convert.ToDouble(txtInicio.Text); x < Convert.ToDouble(txtTermino.Text) ; x += (Convert.ToDouble(txtPasso.Text)*Math.Pow(10,-3)))
             {
-                samplingTime = x;
+                
                 receive = await RestCommunication(receive);
-                double error = Convert.ToDouble(txtStep.Text) - Convert.ToDouble(receive);
-                
-                string step = txtStep.Text.Replace(',','.');
-                string time = Math.Round(x,10).ToString().Replace(',', '.');
-                string erro = error.ToString().Replace(',', '.');
-                string saidaPlanta = receive.Replace(',', '.');
 
-                csvContent.AppendLine(step + ";" + time + ";" + erro + ";" + erro + ";" + saidaPlanta);
-                
+                PlotGraph(samplingTime, Double.Parse(receiveOld));
+
+                csvContent.AppendLine(
+                    txtStep.Text.Replace(',', '.') + ";" + 
+                    samplingTime.ToString().Replace(',', '.') + ";" + 
+                    erro.ToString().Replace(',', '.') + ";" + 
+                    controllerAction.ToString().Replace(',', '.') + ";" +
+                    receiveOld.Replace(',', '.'));
+
+                receiveOld = receive;
+
             }            
 
             try
             {
                 File.WriteAllText(csvPath, csvContent.ToString(), Encoding.GetEncoding(28591));
                 await RestClient.Post("0/0");
+
+                grpCommand.Enabled = true;
+                grpController.Enabled = true;
             }
 
             catch

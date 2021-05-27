@@ -9,8 +9,7 @@ namespace PlantSimulator_Server
 {
     public static class Sistema
     {
-        static public double discretizationTime = 0.1;
-        static public bool status = false;
+        static public double discretizationTime = 0.01;
         static public double entradaOldOld = 0;
         static public double entradaOld = 0;
         static public double saida = 0;
@@ -29,14 +28,13 @@ namespace PlantSimulator_Server
                 gainK = double.Parse(stringGainK);
                 tau = double.Parse(stringTau);
                 a = double.Parse(stringSignal + stringA);
-
             }
 
 
             public static double RespostaMalhaAberta(double entrada)
             {
 
-                saida = (gainK / a) * (1 - Math.Exp(-discretizationTime * a)) * entradaOld + Math.Exp(-a * discretizationTime / tau) * saidaOld;
+                saida = (gainK / a) * (1 - Math.Exp(-discretizationTime * a / tau)) * entradaOld + Math.Exp(-a * discretizationTime / tau) * saidaOld;
                                 
                 saidaOld = saida;                
                 entradaOld = entrada;
@@ -57,15 +55,21 @@ namespace PlantSimulator_Server
             public static void SetParameters(string stringWn2, string stringA, string stringSignal, string stringKsiWn)
             {
                 wn = Math.Sqrt(double.Parse(stringWn2));
-                ksi = double.Parse(stringSignal + stringKsiWn) / (2 * wn);
+                ksi = (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) == 1 ?
+                        (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) + 0.0000000000000000001 :
+                        (double.Parse(stringSignal + stringKsiWn) / (2 * wn));
                 a = double.Parse(stringA);
 
             }
 
             public static double RespostaMalhaAberta(double entrada)
             {
-                saida = (wn / Math.Pow((2 * ksi * wn),2)) * (2 * wn * discretizationTime * ksi - 1 + 1 * Math.Exp(-2 * wn * ksi * discretizationTime)) * entradaOld + (wn / Math.Pow((2 * ksi * wn),2)) * (-(2 * discretizationTime * ksi * wn + 1) * Math.Exp(-2 * discretizationTime * ksi * wn) + 1) * entradaOldOld + 2 * Math.Exp(-wn * ksi * discretizationTime) * Math.Cos(wn * discretizationTime * Math.Sqrt(1 - Math.Pow(ksi, 2))) * saidaOld - Math.Exp(-2 * ksi * wn * discretizationTime) * saidaOldOld;
-                
+                double a = ksi * wn;
+                double b = Math.Sqrt(wn * wn - ksi * ksi * wn * wn);
+
+                saida = (1 - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime) - a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b) * entradaOld + (Math.Exp(-2 * a * discretizationTime) + a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime)) * entradaOldOld + 2 * Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime) * saidaOld - Math.Exp(-2 * a * discretizationTime) * saidaOldOld;
+
+
                 saidaOldOld = saidaOld;
                 saidaOld = saida;
                 
