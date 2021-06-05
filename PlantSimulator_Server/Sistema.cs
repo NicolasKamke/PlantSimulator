@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,10 +10,12 @@ namespace PlantSimulator_Server
 {
     public static class Sistema
     {
-        static public double discretizationTime = 0.01;
+        static public double discretizationTime = 0.001;
         static public double entradaOldOld = 0;
         static public double entradaOld = 0;
+        static public double entrada = 0;
         static public double saida = 0;
+        static public double saidaTemp = 0;
         static public double saidaOld = 0;
         static public double saidaOldOld = 0;
      
@@ -34,12 +37,12 @@ namespace PlantSimulator_Server
             public static double RespostaMalhaAberta(double entrada)
             {
 
-                saida = (gainK / a) * (1 - Math.Exp(-discretizationTime * a / tau)) * entradaOld + Math.Exp(-a * discretizationTime / tau) * saidaOld;
+                saidaTemp = (gainK / a) * (1 - Math.Exp(-discretizationTime * a / tau)) * entradaOld + Math.Exp(-a * discretizationTime / tau) * saidaOld;
                                 
-                saidaOld = saida;                
+                saidaOld = saidaTemp;                
                 entradaOld = entrada;
 
-                return saida;
+                return saidaTemp;
             }
         }
         #endregion
@@ -54,10 +57,10 @@ namespace PlantSimulator_Server
 
             public static void SetParameters(string stringWn2, string stringA, string stringSignal, string stringKsiWn)
             {
-                wn = Math.Sqrt(double.Parse(stringWn2));
-                ksi = (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) == 1 ?
-                        (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) + 0.0000000000000000001 :
-                        (double.Parse(stringSignal + stringKsiWn) / (2 * wn));
+                if (stringWn2.Trim() != "") wn = Math.Sqrt(double.Parse(stringWn2));
+                if (stringKsiWn.Trim() != "") ksi = (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) == 1 ?
+                            (double.Parse(stringSignal + stringKsiWn) / (2 * wn)) + 0.0000000001 :
+                            (double.Parse(stringSignal + stringKsiWn) / (2 * wn));
                 a = double.Parse(stringA);
 
             }
@@ -65,18 +68,19 @@ namespace PlantSimulator_Server
             public static double RespostaMalhaAberta(double entrada)
             {
                 double a = ksi * wn;
-                double b = Math.Sqrt(wn * wn - ksi * ksi * wn * wn);
+                Complex bComplex = Complex.Sqrt(wn * wn - ksi * ksi * wn * wn);
+                double b = bComplex.Real;
 
-                saida = (1 - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime) - a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b) * entradaOld + (Math.Exp(-2 * a * discretizationTime) + a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime)) * entradaOldOld + 2 * Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime) * saidaOld - Math.Exp(-2 * a * discretizationTime) * saidaOldOld;
+                saidaTemp = ((1 - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime) - a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b)) * entradaOld + ((Math.Exp(-2 * a * discretizationTime) + a * Math.Exp(-a * discretizationTime) * Math.Sin(b * discretizationTime) / b - Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime))) * entradaOldOld + (2 * Math.Exp(-a * discretizationTime) * Math.Cos(b * discretizationTime)) * saidaOld - (Math.Exp(-2 * a * discretizationTime)) * saidaOldOld;
 
 
                 saidaOldOld = saidaOld;
-                saidaOld = saida;
+                saidaOld = saidaTemp;
                 
                 entradaOldOld = entradaOld;
                 entradaOld = entrada;
 
-                return saida;
+                return saidaTemp;
             }           
 
         }

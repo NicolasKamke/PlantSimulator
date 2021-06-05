@@ -67,6 +67,9 @@ namespace PlantSimulator_Client
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.btnSaturacao = new System.Windows.Forms.Button();
+            this.txtSaturacao = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.grpCommand.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picOpcButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picRestButton)).BeginInit();
@@ -296,7 +299,7 @@ namespace PlantSimulator_Client
             this.txtPasso.Name = "txtPasso";
             this.txtPasso.Size = new System.Drawing.Size(60, 20);
             this.txtPasso.TabIndex = 2;
-            this.txtPasso.Text = "10";
+            this.txtPasso.Text = "3,15";
             this.txtPasso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
             this.txtPasso.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
@@ -441,11 +444,43 @@ namespace PlantSimulator_Client
             this.label6.TabIndex = 0;
             this.label6.Text = "Kp";
             // 
+            // btnSaturacao
+            // 
+            this.btnSaturacao.Location = new System.Drawing.Point(632, 158);
+            this.btnSaturacao.Name = "btnSaturacao";
+            this.btnSaturacao.Size = new System.Drawing.Size(100, 28);
+            this.btnSaturacao.TabIndex = 27;
+            this.btnSaturacao.Text = "Ligar";
+            this.btnSaturacao.UseVisualStyleBackColor = true;
+            this.btnSaturacao.Click += new System.EventHandler(this.btnSaturacao_Click);
+            // 
+            // txtSaturacao
+            // 
+            this.txtSaturacao.Location = new System.Drawing.Point(632, 135);
+            this.txtSaturacao.Name = "txtSaturacao";
+            this.txtSaturacao.Size = new System.Drawing.Size(100, 20);
+            this.txtSaturacao.TabIndex = 28;
+            this.txtSaturacao.Text = "0,5";
+            this.txtSaturacao.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
+            this.txtSaturacao.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(632, 119);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 13);
+            this.label10.TabIndex = 29;
+            this.label10.Text = "Saturador";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 555);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.txtSaturacao);
+            this.Controls.Add(this.btnSaturacao);
             this.Controls.Add(this.grpController);
             this.Controls.Add(this.txtWindowTime);
             this.Controls.Add(this.label5);
@@ -512,6 +547,9 @@ namespace PlantSimulator_Client
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnController;
         private System.Windows.Forms.Button btnCloseLoop;
+        private System.Windows.Forms.Button btnSaturacao;
+        private System.Windows.Forms.TextBox txtSaturacao;
+        private System.Windows.Forms.Label label10;
     }
 }
 

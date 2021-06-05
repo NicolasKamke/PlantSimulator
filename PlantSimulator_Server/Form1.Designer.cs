@@ -72,6 +72,7 @@ namespace PlantSimulator_Server
             this.picOpcButton = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.btnStartStop = new System.Windows.Forms.Button();
             this.btnDataReceive = new PlantSimulator.CircularButton();
             this.btnDataSend = new PlantSimulator.CircularButton();
             this.grpPrimeiraOrdem.SuspendLayout();
@@ -89,7 +90,7 @@ namespace PlantSimulator_Server
             this.cbxSitema.Items.AddRange(new object[] {
             "1ª Ordem",
             "2ª Ordem"});
-            this.cbxSitema.Location = new System.Drawing.Point(10, 104);
+            this.cbxSitema.Location = new System.Drawing.Point(10, 97);
             this.cbxSitema.Name = "cbxSitema";
             this.cbxSitema.Size = new System.Drawing.Size(93, 21);
             this.cbxSitema.TabIndex = 2;
@@ -98,7 +99,7 @@ namespace PlantSimulator_Server
             // lblSistema
             // 
             this.lblSistema.AutoSize = true;
-            this.lblSistema.Location = new System.Drawing.Point(10, 85);
+            this.lblSistema.Location = new System.Drawing.Point(10, 78);
             this.lblSistema.Name = "lblSistema";
             this.lblSistema.Size = new System.Drawing.Size(93, 13);
             this.lblSistema.TabIndex = 3;
@@ -220,6 +221,7 @@ namespace PlantSimulator_Server
             this.txtbWn2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtbWn2.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtbWn2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtbWn2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cloneWn);
             this.txtbWn2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // txtSignal2
@@ -308,6 +310,7 @@ namespace PlantSimulator_Server
             this.txtWn2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtWn2.TextChanged += new System.EventHandler(this.tranferFunction_TextChanged);
             this.txtWn2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberCharacteres_KeyPress);
+            this.txtWn2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cloneWn);
             this.txtWn2.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
             // label2
@@ -321,8 +324,8 @@ namespace PlantSimulator_Server
             // 
             // grpSistemas
             // 
-            this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
             this.grpSistemas.Controls.Add(this.grpSegundaOrdem);
+            this.grpSistemas.Controls.Add(this.grpPrimeiraOrdem);
             this.grpSistemas.Location = new System.Drawing.Point(114, 69);
             this.grpSistemas.Name = "grpSistemas";
             this.grpSistemas.Size = new System.Drawing.Size(220, 118);
@@ -508,7 +511,7 @@ namespace PlantSimulator_Server
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(-2, 135);
+            this.label9.Location = new System.Drawing.Point(-2, 146);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(52, 13);
             this.label9.TabIndex = 19;
@@ -517,11 +520,21 @@ namespace PlantSimulator_Server
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(51, 135);
+            this.label10.Location = new System.Drawing.Point(51, 146);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(63, 13);
             this.label10.TabIndex = 19;
             this.label10.Text = "Recebendo";
+            // 
+            // btnStartStop
+            // 
+            this.btnStartStop.Location = new System.Drawing.Point(10, 121);
+            this.btnStartStop.Name = "btnStartStop";
+            this.btnStartStop.Size = new System.Drawing.Size(93, 21);
+            this.btnStartStop.TabIndex = 20;
+            this.btnStartStop.Text = "Start";
+            this.btnStartStop.UseVisualStyleBackColor = true;
+            this.btnStartStop.Click += new System.EventHandler(this.btnStartStop_Click);
             // 
             // btnDataReceive
             // 
@@ -529,7 +542,7 @@ namespace PlantSimulator_Server
             this.btnDataReceive.Enabled = false;
             this.btnDataReceive.FlatAppearance.BorderSize = 0;
             this.btnDataReceive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDataReceive.Location = new System.Drawing.Point(72, 150);
+            this.btnDataReceive.Location = new System.Drawing.Point(72, 161);
             this.btnDataReceive.Name = "btnDataReceive";
             this.btnDataReceive.Size = new System.Drawing.Size(20, 20);
             this.btnDataReceive.TabIndex = 18;
@@ -541,7 +554,7 @@ namespace PlantSimulator_Server
             this.btnDataSend.Enabled = false;
             this.btnDataSend.FlatAppearance.BorderSize = 0;
             this.btnDataSend.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDataSend.Location = new System.Drawing.Point(14, 150);
+            this.btnDataSend.Location = new System.Drawing.Point(14, 161);
             this.btnDataSend.Name = "btnDataSend";
             this.btnDataSend.Size = new System.Drawing.Size(20, 20);
             this.btnDataSend.TabIndex = 18;
@@ -552,6 +565,7 @@ namespace PlantSimulator_Server
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(336, 195);
+            this.Controls.Add(this.btnStartStop);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.btnDataReceive);
@@ -624,6 +638,7 @@ namespace PlantSimulator_Server
         private System.Windows.Forms.Label label10;
         internal PlantSimulator.CircularButton btnDataSend;
         private System.Windows.Forms.TextBox txtbA;
+        private System.Windows.Forms.Button btnStartStop;
     }
 }
 

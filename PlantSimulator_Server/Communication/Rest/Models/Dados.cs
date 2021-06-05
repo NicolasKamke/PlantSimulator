@@ -20,7 +20,9 @@ namespace PlantSimulator.Communication.Rest.Models
             {
                 Sistema.entradaOldOld = 0;
                 Sistema.entradaOld = 0;
+                Sistema.entrada = 0;
                 Sistema.saida = 0;
+                Sistema.saidaTemp = 0;
                 Sistema.saidaOld = 0;
                 Sistema.saidaOldOld = 0;
 
@@ -33,7 +35,15 @@ namespace PlantSimulator.Communication.Rest.Models
 
             else if (input.Count(f => (f == '/')) == 0)
             {
-                Input = double.Parse(input);
+                try
+                {
+                    Input = double.Parse(input);
+                    Sistema.entrada = Input;
+                }
+                catch
+                {
+
+                }
             }
         }
 

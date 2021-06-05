@@ -17,28 +17,32 @@ namespace PlantSimulator_Client
     {
         #region Inicialização de variáveis globais
 
-        int velocityPloting = 0;
-        double graphIncrement = 0.01;
+        int velocityPloting = 15;   
+        double graphIncrement = 0.003154;
+        double samplingTime;
+
+        string selectCommunication = "";
+        double saidaIntegralOld = 0;
+        double erroOld = 0;
+        double step = 1;
+
+        bool newStepInGraph = false;
+        bool cancelationCSV = false;
+        bool controller = false;
+        bool closeLoop = false;
+        bool saturacao = false;
 
         string csvPath = AppDomain.CurrentDomain.BaseDirectory + "\\plantResponse.csv";
-
         CancellationTokenSource tokenSource = null;
-
         GraphPane myPaneGraph = new GraphPane();
-
         PointPairList listPoint = new PointPairList();
 
         LineItem myCurveGraph;
         double graphWindowTime;
-        bool controlLoopTask;
-        bool closeLoop = false;
-        bool newStepInGraph = false;
-        double samplingTime;        
-        string selectCommunication = "";
-        double step = 1;
+        bool controlLoopTask;        
         double erro;
         double controllerAction;
-        bool controller = false;
+        
 
         #endregion
 
@@ -243,7 +247,6 @@ namespace PlantSimulator_Client
 
         }
 
-
         #endregion
 
         #region Thread de envio e recebimento de dados
@@ -256,6 +259,9 @@ namespace PlantSimulator_Client
             controllerAction = 0;
             erro = 0;
 
+            saidaIntegralOld = 0;
+            erroOld = 0;
+
             controlLoopTask = true;
             step = Double.Parse(txtStep.Text);
 
@@ -265,7 +271,7 @@ namespace PlantSimulator_Client
             try
             {
                 await RestClient.Post("0/0");
-            }                
+            }
             catch
             {
                 ErrorInThread("ERROR: Verifique a comunicação");
@@ -301,14 +307,23 @@ namespace PlantSimulator_Client
                
             }
 
-           
-
+            //try
+            //{
+            //    await RestClient.Post("0/0");
+            //}
+            //catch
+            //{
+            //    ErrorInThread("ERROR: Verifique a comunicação");
+            //}
         }
         #endregion
 
-        #region Comunicação  
-        double saidaIntegralOld = 0;
-        double entradaOld = 0;
+        #region Comunicação    
+        double saidaOldOld = 0;
+        double saidaOld = 0;
+        double saidaDerivadaOld = 0;
+        double erroOldOld;
+
 
         public async Task<string> RestCommunication(string receive)
         {
@@ -322,23 +337,46 @@ namespace PlantSimulator_Client
                 double x = closeLoop ? 0 : Convert.ToDouble(receive)* Convert.ToDouble(txtFeedbackGain.Text);
                 erro = (step - x);
 
-                controllerAction = erro;
+                controllerAction = erro;               
 
                 if (controller)
-                {
-                    if (txtKp.Text != "0")
-                        proporcional = erro * Double.Parse(txtKp.Text);
-                    if (txtKi.Text != "0")                    
-                        integral = Double.Parse(txtKi.Text) * (saidaIntegralOld + erro * 0.1);
-                    if (txtKd.Text != "0")
-                        derivativo = Double.Parse(txtKd.Text)*((erro-entradaOld)/0.1);
+                {                   
+
+                    double Kp = Double.Parse(txtKp.Text);
+                    double Ki = Double.Parse(txtKi.Text);
+                    double Kd = Double.Parse(txtKd.Text);
+                    double N = 1000;
+                    double Td = 1.31;
+                    double Ts = 0.00319;
+
+
+                    if (Kp != 0)
+                        proporcional = Kp * erro;
+                    if (Ki != 0)
+                        integral = Ki * 0.00319 * erroOld + saidaIntegralOld;
+                    if (Kd != 0)
+                        //derivativo = (Kd / 0.00161) * (erro - erroOld);
+                        derivativo = Kd * ((N * Td * (erro - erroOld) - saidaDerivadaOld * (N * Ts - Td)) / Td);
+
 
                     controllerAction = proporcional + integral + derivativo;
 
-                }
 
-                saidaIntegralOld = integral;
-                entradaOld = erro;
+
+                    saidaDerivadaOld = derivativo;
+                    saidaIntegralOld = integral;
+                    saidaOldOld = saidaOld;
+                    saidaOld = controllerAction;
+                    erroOldOld = erroOld;
+                    erroOld = erro;
+
+                }                
+
+                if(saturacao)
+                {
+                    if (controllerAction > Double.Parse(txtSaturacao.Text))
+                        controllerAction = Double.Parse(txtSaturacao.Text);
+                }
 
                 await RestClient.Post((controllerAction).ToString());
                 
@@ -416,6 +454,9 @@ namespace PlantSimulator_Client
                 switch (((TextBox)sender).Name)
                 {
                     case "txtInicio":
+                        ((TextBox)sender).Text = "0";
+                        break;
+                    case "txtSaturacao":
                         ((TextBox)sender).Text = "0";
                         break;
                     case "txtKp":
@@ -511,8 +552,24 @@ namespace PlantSimulator_Client
         #endregion
 
         #region Gerar CSV
-        private async void btnGerarCSV_Click(object sender, EventArgs e)
-        {
+        private void btnGerarCSV_Click(object sender, EventArgs e)
+        { 
+            if(btnGerarCSV.Text == "Gerar")
+            {
+                btnGerarCSV.Text = "Cancelar";
+                cancelationCSV = false;
+                GerarCSV();
+            }
+            else if (btnGerarCSV.Text == "Cancelar")
+            {
+                btnGerarCSV.Text = "Gerar";
+                cancelationCSV = true;
+            }
+        }
+
+        async void GerarCSV() 
+        { 
+
             try
             {
                 await RestClient.Post("0/0");
@@ -527,6 +584,9 @@ namespace PlantSimulator_Client
             listPoint.Clear();
             samplingTime = -2* graphIncrement;
             erro = 0;
+            saidaIntegralOld = 0;
+            saidaOld = 0;
+            erroOld = 0;
             string receive = "0";
             string receiveOld = "0";
             StringBuilder csvContent = new StringBuilder();
@@ -547,13 +607,16 @@ namespace PlantSimulator_Client
                     receiveOld.Replace(',', '.'));
 
                 receiveOld = receive;
-
+                if (cancelationCSV)
+                    break;
             }            
 
             try
             {
                 File.WriteAllText(csvPath, csvContent.ToString(), Encoding.GetEncoding(28591));
                 await RestClient.Post("0/0");
+
+                btnGerarCSV.Text = "Gerar";
 
                 grpCommand.Enabled = true;
                 grpController.Enabled = true;
@@ -567,8 +630,23 @@ namespace PlantSimulator_Client
 
         }
 
+
         #endregion
 
-       
+        private void btnSaturacao_Click(object sender, EventArgs e)
+        {
+
+            if (btnSaturacao.Text == "Ligar")
+            {
+                btnSaturacao.Text = "Desligar";
+                saturacao = true;
+            }
+            else if (btnSaturacao.Text == "Desligar")
+            {
+                btnSaturacao.Text = "Ligar";
+                saturacao = false;
+            }
+
+        }
     }
 }

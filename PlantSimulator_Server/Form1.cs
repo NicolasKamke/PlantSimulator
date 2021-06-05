@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using PlantSimulator;
 using PlantSimulator.Communication.OPC.Forms;
 using PlantSimulator.Communication.Rest.Forms;
 
 namespace PlantSimulator_Server
-{    
+{
     public partial class Form1 : Form
     {
+        CancellationTokenSource tokenSource = null;
+        bool controlPlantLoop = false;
+
         #region Inicialize
         public Form1()
         {
             InitializeComponent();
             CalculaParametrosPrimeiraOrdem();
-            MonitoraConexao.ConstructorMonitoraFluxo(this);            
+            MonitoraConexao.ConstructorMonitoraFluxo(this);
             cbxSitema.SelectedIndex = 0;
-            
+
 
         }
         #endregion        
@@ -57,7 +62,7 @@ namespace PlantSimulator_Server
 
         #region Seleção do tipo de sistema
         private void cbxSitema_SelectedIndexChanged(object sender, EventArgs e)
-        {                   
+        {
 
             switch (cbxSitema.SelectedIndex)
             {
@@ -95,8 +100,8 @@ namespace PlantSimulator_Server
         {
             Regex regex = new Regex("[\b+-]");
 
-            e.Handled = !regex.IsMatch(e.KeyChar.ToString());                
-            
+            e.Handled = !regex.IsMatch(e.KeyChar.ToString());
+
         }
         #endregion
 
@@ -104,7 +109,7 @@ namespace PlantSimulator_Server
         private void emptyTxtBoxVerify(object sender, EventArgs e)
         {
             if (sender.ToString().Split(':')[1].Trim() == "")
-            {   
+            {
                 ((TextBox)sender).Text = "1";
             }
 
@@ -153,7 +158,7 @@ namespace PlantSimulator_Server
         #region Comunicação
 
         #region REST
-     
+
         private void picRestButton_Click(object sender, EventArgs e)
         {
             if (MonitoraConexao.selectCommunication == "" || MonitoraConexao.selectCommunication == "rest")
@@ -172,9 +177,10 @@ namespace PlantSimulator_Server
 
         private void picOpcButton_Click(object sender, EventArgs e)
         {
-            if (MonitoraConexao.selectCommunication == "" || MonitoraConexao.selectCommunication == "opc") {
+            if (MonitoraConexao.selectCommunication == "" || MonitoraConexao.selectCommunication == "opc")
+            {
                 FormOPC FormOPCPage = new FormOPC();
-                FormOPCPage.Show(); 
+                FormOPCPage.Show();
             }
             else
             {
@@ -193,8 +199,58 @@ namespace PlantSimulator_Server
             DevicesConnectionPage.Show();
 
         }
+
         #endregion
 
+        #region Clonar Wn
+        private void cloneWn(object sender, KeyEventArgs e)
+        {
+            switch (((TextBox)sender).Name)
+            {
+                case "txtWn2":
+                    txtbWn2.Text = txtWn2.Text;
+                    break;
+                case "txtbWn2":
+                    txtWn2.Text = txtbWn2.Text;
+                    break;
+            }
+        }
+        #endregion
 
+        #region Botão Start e Stop
+        private void btnStartStop_Click(object sender, EventArgs e)
+        {
+            if (btnStartStop.Text == "Start")
+            {
+                btnStartStop.Text = "Stop";
+                controlPlantLoop = true;
+                tokenSource = new CancellationTokenSource();
+                Task.Run(() => PlantLoop(), tokenSource.Token);
+            }
+            else if (btnStartStop.Text == "Stop")
+            {
+                btnStartStop.Text = "Start";
+                controlPlantLoop = false;
+                tokenSource.Cancel();
+
+
+
+            }
+        }
+
+        #endregion
+
+        public void PlantLoop()
+        {
+
+            while (controlPlantLoop)
+            {              
+                Sistema.Resposta.MalhaAberta(Sistema.entrada);
+                Thread.Sleep((int)(Sistema.discretizationTime*Math.Pow(10,3)));
+                Sistema.saida = Sistema.saidaTemp;
+            }
+        }
+
+        
     }
 }

@@ -16,7 +16,7 @@ namespace PlantSimulator.Communication.Rest.Controllers
 
             if (id == "input") return data.Input.ToString();
 
-            if (id == "output") return data.Output.ToString();           
+            if (id == "output") return Sistema.saida.ToString();           
 
             else return null;
         }
@@ -28,7 +28,7 @@ namespace PlantSimulator.Communication.Rest.Controllers
 
             data.RecebeDados(input);
            
-            data.Output = Sistema.Resposta.MalhaAberta(data.Input);
+            //data.Output = Sistema.Resposta.MalhaAberta(data.Input);
 
         }
     }
