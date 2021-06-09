@@ -10,6 +10,7 @@ using ZedGraph;
 using System.Xml.Linq;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
 
 namespace PlantSimulator_Client
 {
@@ -17,12 +18,13 @@ namespace PlantSimulator_Client
     {
         #region Inicialização de variáveis globais
 
-        int velocityPloting = 15;   
-        double graphIncrement = 0.003154;
+        double graphIncrement = 0.08;
+        double velocityPloting = 0.08;
         double samplingTime;
 
         string selectCommunication = "";
         double saidaIntegralOld = 0;
+        double saidaDerivadaOld = 0;
         double erroOld = 0;
         double step = 1;
 
@@ -32,10 +34,16 @@ namespace PlantSimulator_Client
         bool closeLoop = false;
         bool saturacao = false;
 
+        string receive = "0";
+        string receiveOld = "0";
+        double receiveData = 0;
+
         string csvPath = AppDomain.CurrentDomain.BaseDirectory + "\\plantResponse.csv";
         CancellationTokenSource tokenSource = null;
         GraphPane myPaneGraph = new GraphPane();
         PointPairList listPoint = new PointPairList();
+
+        StringBuilder csvContent = new StringBuilder();
 
         LineItem myCurveGraph;
         double graphWindowTime;
@@ -79,10 +87,35 @@ namespace PlantSimulator_Client
         #endregion
 
         #region Enventos Botões click
-        private void btnStart_Click(object sender, EventArgs e)
+        private async void btnStart_Click(object sender, EventArgs e)
         {
+            receive = "0";
+            receiveOld = "0";
+            receiveData = 0;
+            samplingTime = -graphIncrement;
+            controllerAction = 0;
+            erro = 0;
+
+            saidaIntegralOld = 0;
+            erroOld = 0;
+
+            controlLoopTask = true;
+            step = Double.Parse(txtStep.Text);
+
+            listPoint.Clear();
+            myPaneGraph.XAxis.Scale.Min = samplingTime;
+
+            try
+            {
+                await RestClient.Post("0/0");
+            }
+            catch
+            {
+                ErrorInThread("ERROR: Verifique a comunicação");
+            }
+
             tokenSource = new CancellationTokenSource();
-            Task.Run(() => ContinuousSampling(), tokenSource.Token);
+            Task.Run(() => TimerPlotaGrafico(), tokenSource.Token);           
             btnStep.Visible = true;
 
             txtWindowTime.Enabled = false;
@@ -91,21 +124,13 @@ namespace PlantSimulator_Client
             graphWindowTime = Double.Parse(txtWindowTime.Text);
         }
 
-        private async void btnStop_Click(object sender, EventArgs e)
+        private void btnStop_Click(object sender, EventArgs e)
         {
             controlLoopTask = false;
             tokenSource.Cancel(); 
             btnStart.Visible = true;
             btnStep.Visible = false;
-            //try
-            //{
-            //    await RestClient.Post("0/0");
-            //}
-            //catch
-            //{
-            //    ErrorInThread("ERROR: Sem conexão com o servidor");
-            //}
-
+   
             txtWindowTime.Enabled = true;
             grpController.Enabled = true;
         }
@@ -155,6 +180,22 @@ namespace PlantSimulator_Client
                 btnController.BackColor = Color.Lime;
                 controller = !controller;
             }
+        }
+
+        private void btnSaturacao_Click(object sender, EventArgs e)
+        {
+
+            if (btnSaturacao.Text == "Ligar")
+            {
+                btnSaturacao.Text = "Desligar";
+                saturacao = true;
+            }
+            else if (btnSaturacao.Text == "Desligar")
+            {
+                btnSaturacao.Text = "Ligar";
+                saturacao = false;
+            }
+
         }
 
         #endregion
@@ -233,9 +274,7 @@ namespace PlantSimulator_Client
             else
             {
                 myPaneGraph.XAxis.Scale.Min = 0;
-            }
-
-            //myPaneGraph.YAxis.Scale.Max = receiveData*1.5;
+            }    
 
             this.zedGraph.Invoke((MethodInvoker)delegate
             {
@@ -252,85 +291,62 @@ namespace PlantSimulator_Client
         #region Thread de envio e recebimento de dados
         public async void ContinuousSampling()
         {
-            string receive = "0";
-            string receiveOld = "0";
-            double receiveData = 0;
-            samplingTime = -graphIncrement;
-            controllerAction = 0;
-            erro = 0;
 
-            saidaIntegralOld = 0;
-            erroOld = 0;
-
-            controlLoopTask = true;
-            step = Double.Parse(txtStep.Text);
-
-            listPoint.Clear();
-            myPaneGraph.XAxis.Scale.Min = samplingTime;
-
-            try
+            if (selectCommunication == "")
             {
-                await RestClient.Post("0/0");
+                ErrorInThread("Selecione um protocolo de comunicação!");
+                return;
             }
-            catch
+            if (selectCommunication == "rest")
             {
-                ErrorInThread("ERROR: Verifique a comunicação");
+                try
+                {
+                        
+                    receive = await RestCommunication(receiveOld);
+                    receiveOld = receive;
+
+                }
+                catch
+                {
+                    ErrorInThread("Não foi possível estabelecer conexão com o servidor!");
+                        
+                }
             }
-
-            while (controlLoopTask)
-            {
-
-                if (selectCommunication == "")
-                {
-                    ErrorInThread("Selecione um protocolo de comunicação!");
-                    return;
-                }
-                if (selectCommunication == "rest")
-                {
-                    try
-                    {
-                        
-                        receive = await RestCommunication(receiveOld);
-                        receiveOld = receive;
-
-                    }
-                    catch
-                    {
-                        ErrorInThread("Não foi possível estabelecer conexão com o servidor!");
-                        
-                    }
-                }
                 
-                receiveData = Double.Parse(receive);
+            receiveData = Double.Parse(receive);
 
-                PlotGraph(samplingTime, receiveData);                             
+            PlotGraph(samplingTime, receiveData);                             
                
-            }
+         
 
-            //try
-            //{
-            //    await RestClient.Post("0/0");
-            //}
-            //catch
-            //{
-            //    ErrorInThread("ERROR: Verifique a comunicação");
-            //}
         }
         #endregion
 
-        #region Comunicação    
-        double saidaOldOld = 0;
-        double saidaOld = 0;
-        double saidaDerivadaOld = 0;
-        double erroOldOld;
+        #region Timer1
+        private void TimerPlotaGrafico()
+        {
+            while (controlLoopTask)
+            {
+                var durationTicks = Math.Round(velocityPloting * Stopwatch.Frequency);
+                var sw = Stopwatch.StartNew();
 
+                while (sw.ElapsedTicks < durationTicks)
+                {
 
+                }
+
+                Task.Run(() => ContinuousSampling());
+            }
+
+        }
+        #endregion
+
+        #region Comunicação
         public async Task<string> RestCommunication(string receive)
         {
             double proporcional = 0;
             double integral = 0;
             double derivativo = 0;
-
 
             try
             {
@@ -345,29 +361,23 @@ namespace PlantSimulator_Client
                     double Kp = Double.Parse(txtKp.Text);
                     double Ki = Double.Parse(txtKi.Text);
                     double Kd = Double.Parse(txtKd.Text);
-                    double N = 1000;
-                    double Td = 1.31;
-                    double Ts = 0.00319;
+                    double N = 100;
+                    double Td = 2;
+                    double Ts = velocityPloting;
 
 
                     if (Kp != 0)
                         proporcional = Kp * erro;
                     if (Ki != 0)
-                        integral = Ki * 0.00319 * erroOld + saidaIntegralOld;
+                        integral = Ki * velocityPloting * erroOld + saidaIntegralOld;
                     if (Kd != 0)
-                        //derivativo = (Kd / 0.00161) * (erro - erroOld);
-                        derivativo = Kd * ((N * Td * (erro - erroOld) - saidaDerivadaOld * (N * Ts - Td)) / Td);
-
+                        derivativo = (Kd / velocityPloting) * (erro - erroOld);
+                        //derivativo = Kd * ((N * Td * (erro - erroOld) - saidaDerivadaOld * (N * Ts - Td)) / Td);
 
                     controllerAction = proporcional + integral + derivativo;
 
-
-
                     saidaDerivadaOld = derivativo;
                     saidaIntegralOld = integral;
-                    saidaOldOld = saidaOld;
-                    saidaOld = controllerAction;
-                    erroOldOld = erroOld;
                     erroOld = erro;
 
                 }                
@@ -376,9 +386,7 @@ namespace PlantSimulator_Client
                 {
                     if (controllerAction > Double.Parse(txtSaturacao.Text))
                         controllerAction = Double.Parse(txtSaturacao.Text);
-                }
-
-                await RestClient.Post((controllerAction).ToString());
+                }              
                 
 
                 if (newStepInGraph)
@@ -391,11 +399,13 @@ namespace PlantSimulator_Client
 
                 }
 
-                Thread.Sleep(velocityPloting);
+                string get = await RestClient.Get("output");
+
+                await RestClient.Post((controllerAction).ToString());
 
                 samplingTime += graphIncrement;
 
-                return await RestClient.Get("output");
+                return get;
 
             }
             catch
@@ -551,14 +561,86 @@ namespace PlantSimulator_Client
         //}
         #endregion
 
+        #region Timer Gera CSV
+        private async void TimerGeraCSV()
+        {
+            csvContent.Clear();
+            csvContent.AppendLine("r(t) - SetPoint; t - Tempo;e(t) - Erro;u(t) - Saído do Controlador;y(t) - Variável de Processo");
+
+            while (controlLoopTask)
+            {
+                var durationTicks = Math.Round(velocityPloting * Stopwatch.Frequency);
+                var sw = Stopwatch.StartNew();
+
+                while (sw.ElapsedTicks < durationTicks)
+                {
+
+                }
+
+                //GerarCSV();
+                Task.Run(() => GerarCSV());
+
+                if ((samplingTime > Double.Parse(txtTermino.Text)) || cancelationCSV)
+                    controlLoopTask = false;
+            }
+
+            try
+            {
+                File.WriteAllText(csvPath, csvContent.ToString(), Encoding.GetEncoding(28591));
+                await RestClient.Post("0/0");
+            }
+
+            catch
+            {
+                ErrorWriteFile("O arquivo já está sendo usado por outro processo");
+            }
+
+            Invoke((MethodInvoker)delegate
+            {
+                btnGerarCSV.Text = "Gerar";
+
+                grpCommand.Enabled = true;
+                grpController.Enabled = true;
+
+            });
+
+        }
+
+        #endregion
+
         #region Gerar CSV
-        private void btnGerarCSV_Click(object sender, EventArgs e)
+        private async void btnGerarCSV_Click(object sender, EventArgs e)
         { 
             if(btnGerarCSV.Text == "Gerar")
             {
+                try
+                {
+                    await RestClient.Post("0/0");
+                }
+                catch
+                {
+                    ErrorInThread("ERROR: Verifique a comunicação");
+                }
+
+                grpCommand.Enabled = false;
+                grpController.Enabled = false;
+                listPoint.Clear();
+                samplingTime = -graphIncrement;
+                controllerAction = 0;
+                erro = 0;
+                saidaIntegralOld = 0;         
+                erroOld = 0;
+                step = Double.Parse(txtStep.Text);
+                myPaneGraph.XAxis.Scale.Min = samplingTime;
+                receive = "0";
+                receiveOld = "0";
+
+                controlLoopTask = true;
+
                 btnGerarCSV.Text = "Cancelar";
                 cancelationCSV = false;
-                GerarCSV();
+                //GerarCSV();
+                Task.Run(() => TimerGeraCSV());
             }
             else if (btnGerarCSV.Text == "Cancelar")
             {
@@ -568,85 +650,26 @@ namespace PlantSimulator_Client
         }
 
         async void GerarCSV() 
-        { 
+        {
+            receive = await RestCommunication(receiveOld);
+            receiveOld = receive;
 
-            try
-            {
-                await RestClient.Post("0/0");
-            }
-            catch
-            {
-                ErrorInThread("ERROR: Verifique a comunicação");
-            }
+            PlotGraph(samplingTime, Double.Parse(receiveOld));
 
-            grpCommand.Enabled = false;
-            grpController.Enabled = false;
-            listPoint.Clear();
-            samplingTime = -2* graphIncrement;
-            erro = 0;
-            saidaIntegralOld = 0;
-            saidaOld = 0;
-            erroOld = 0;
-            string receive = "0";
-            string receiveOld = "0";
-            StringBuilder csvContent = new StringBuilder();
-            csvContent.AppendLine("r(t) - SetPoint; t - Tempo;e(t) - Erro;u(t) - Saído do Controlador;y(t) - Variável de Processo");
-            
-            for (double x = Convert.ToDouble(txtInicio.Text); x < Convert.ToDouble(txtTermino.Text) ; x += (Convert.ToDouble(txtPasso.Text)*Math.Pow(10,-3)))
-            {
-                
-                receive = await RestCommunication(receive);
+            csvContent.AppendLine(
+                txtStep.Text.Replace(',', '.') + ";" + 
+                samplingTime.ToString().Replace(',', '.') + ";" + 
+                erro.ToString().Replace(',', '.') + ";" + 
+                controllerAction.ToString().Replace(',', '.') + ";" +
+                receiveOld.Replace(',', '.'));
 
-                PlotGraph(samplingTime, Double.Parse(receiveOld));
-
-                csvContent.AppendLine(
-                    txtStep.Text.Replace(',', '.') + ";" + 
-                    samplingTime.ToString().Replace(',', '.') + ";" + 
-                    erro.ToString().Replace(',', '.') + ";" + 
-                    controllerAction.ToString().Replace(',', '.') + ";" +
-                    receiveOld.Replace(',', '.'));
-
-                receiveOld = receive;
-                if (cancelationCSV)
-                    break;
-            }            
-
-            try
-            {
-                File.WriteAllText(csvPath, csvContent.ToString(), Encoding.GetEncoding(28591));
-                await RestClient.Post("0/0");
-
-                btnGerarCSV.Text = "Gerar";
-
-                grpCommand.Enabled = true;
-                grpController.Enabled = true;
-            }
-
-            catch
-            {
-                ErrorWriteFile("O arquivo já está sendo usado por outro processo");
-            }
-
+                      
 
         }
 
 
         #endregion
 
-        private void btnSaturacao_Click(object sender, EventArgs e)
-        {
-
-            if (btnSaturacao.Text == "Ligar")
-            {
-                btnSaturacao.Text = "Desligar";
-                saturacao = true;
-            }
-            else if (btnSaturacao.Text == "Desligar")
-            {
-                btnSaturacao.Text = "Ligar";
-                saturacao = false;
-            }
-
-        }
+       
     }
 }

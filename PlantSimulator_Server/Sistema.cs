@@ -10,7 +10,7 @@ namespace PlantSimulator_Server
 {
     public static class Sistema
     {
-        static public double discretizationTime = 0.001;
+        static public double discretizationTime = 0.01;
         static public double entradaOldOld = 0;
         static public double entradaOld = 0;
         static public double entrada = 0;

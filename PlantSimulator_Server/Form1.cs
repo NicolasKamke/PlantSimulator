@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using PlantSimulator;
 using PlantSimulator.Communication.OPC.Forms;
 using PlantSimulator.Communication.Rest.Forms;
+using System.Diagnostics;
 
 namespace PlantSimulator_Server
 {
@@ -225,7 +226,7 @@ namespace PlantSimulator_Server
                 btnStartStop.Text = "Stop";
                 controlPlantLoop = true;
                 tokenSource = new CancellationTokenSource();
-                Task.Run(() => PlantLoop(), tokenSource.Token);
+                Task.Run(() => NOP(), tokenSource.Token);
             }
             else if (btnStartStop.Text == "Stop")
             {
@@ -240,15 +241,30 @@ namespace PlantSimulator_Server
 
         #endregion
 
+        private void NOP()
+        {
+            while (controlPlantLoop)
+            {
+                var durationTicks = Math.Round(Sistema.discretizationTime * Stopwatch.Frequency);
+                var sw = Stopwatch.StartNew();
+
+                while (sw.ElapsedTicks < durationTicks)
+                {
+
+                }
+                PlantLoop();
+
+            }
+        }
+
         public void PlantLoop()
         {
 
-            while (controlPlantLoop)
-            {              
-                Sistema.Resposta.MalhaAberta(Sistema.entrada);
-                Thread.Sleep((int)(Sistema.discretizationTime*Math.Pow(10,3)));
-                Sistema.saida = Sistema.saidaTemp;
-            }
+            Sistema.Resposta.MalhaAberta(Sistema.entrada);
+
+            Sistema.saida = Sistema.saidaTemp;
+
+            
         }
 
         

@@ -282,6 +282,7 @@ namespace PlantSimulator_Client
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 3;
             this.label4.Text = "Passo (ms)";
+            this.label4.Visible = false;
             // 
             // btnGerarCSV
             // 
@@ -300,6 +301,7 @@ namespace PlantSimulator_Client
             this.txtPasso.Size = new System.Drawing.Size(60, 20);
             this.txtPasso.TabIndex = 2;
             this.txtPasso.Text = "3,15";
+            this.txtPasso.Visible = false;
             this.txtPasso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BlockNumberAndSignalsCharacteres_KeyPress);
             this.txtPasso.Leave += new System.EventHandler(this.emptyTxtBoxVerify);
             // 
