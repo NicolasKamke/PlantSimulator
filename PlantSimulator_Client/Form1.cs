@@ -18,8 +18,8 @@ namespace PlantSimulator_Client
     {
         #region Inicialização de variáveis globais
 
-        double graphIncrement = 0.08;
-        double velocityPloting = 0.08;
+        double graphIncrement = 0.02;
+        double velocityPloting = 0.02;
         double samplingTime;
 
         string selectCommunication = "";
@@ -348,9 +348,11 @@ namespace PlantSimulator_Client
             double integral = 0;
             double derivativo = 0;
 
+            string get = await RestClient.Get("output");
+
             try
             {
-                double x = closeLoop ? 0 : Convert.ToDouble(receive)* Convert.ToDouble(txtFeedbackGain.Text);
+                double x = closeLoop ? 0 : Convert.ToDouble(get)* Convert.ToDouble(txtFeedbackGain.Text);
                 erro = (step - x);
 
                 controllerAction = erro;               
@@ -361,9 +363,9 @@ namespace PlantSimulator_Client
                     double Kp = Double.Parse(txtKp.Text);
                     double Ki = Double.Parse(txtKi.Text);
                     double Kd = Double.Parse(txtKd.Text);
-                    double N = 100;
-                    double Td = 2;
-                    double Ts = velocityPloting;
+                    //double N = 100;
+                    //double Td = 2;
+                    //double Ts = velocityPloting;
 
 
                     if (Kp != 0)
@@ -371,7 +373,7 @@ namespace PlantSimulator_Client
                     if (Ki != 0)
                         integral = Ki * velocityPloting * erroOld + saidaIntegralOld;
                     if (Kd != 0)
-                        derivativo = (Kd / velocityPloting) * (erro - erroOld);
+                        derivativo = Kd* (1/velocityPloting) * (erro - erroOld);
                         //derivativo = Kd * ((N * Td * (erro - erroOld) - saidaDerivadaOld * (N * Ts - Td)) / Td);
 
                     controllerAction = proporcional + integral + derivativo;
@@ -384,7 +386,7 @@ namespace PlantSimulator_Client
 
                 if(saturacao)
                 {
-                    if (controllerAction > Double.Parse(txtSaturacao.Text))
+                    if (controllerAction >= Double.Parse(txtSaturacao.Text))
                         controllerAction = Double.Parse(txtSaturacao.Text);
                 }              
                 
@@ -399,7 +401,7 @@ namespace PlantSimulator_Client
 
                 }
 
-                string get = await RestClient.Get("output");
+                
 
                 await RestClient.Post((controllerAction).ToString());
 
@@ -654,7 +656,7 @@ namespace PlantSimulator_Client
             receive = await RestCommunication(receiveOld);
             receiveOld = receive;
 
-            PlotGraph(samplingTime, Double.Parse(receiveOld));
+            //PlotGraph(samplingTime, Double.Parse(receiveOld));
 
             csvContent.AppendLine(
                 txtStep.Text.Replace(',', '.') + ";" + 
