@@ -39,11 +39,8 @@ Ambos os certificados se encontram em suas respectivas pastas "\PlantSimulator_S
 
 # Autores
 
-Nícolas Kamke Schimidt
-- www.linkedin.com/in/nschimidt
-
 Hugo Cesar Da Silva Freitas
 - www.linkedin.com/in/hugo-cesar-da-silva-freitas-7b7b04191/
 
-
-
+Nícolas Kamke Schimidt
+- www.linkedin.com/in/nschimidt
