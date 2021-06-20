@@ -290,7 +290,6 @@ namespace PlantSimulator_Server
             this.txtbA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtbA.Location = new System.Drawing.Point(24, 65);
             this.txtbA.Name = "txtbA";
-            this.txtbA.ReadOnly = true;
             this.txtbA.Size = new System.Drawing.Size(23, 20);
             this.txtbA.TabIndex = 5;
             this.txtbA.Text = "1";
@@ -506,6 +505,7 @@ namespace PlantSimulator_Server
             this.picOpcButton.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picOpcButton.TabIndex = 17;
             this.picOpcButton.TabStop = false;
+            this.picOpcButton.Visible = false;
             this.picOpcButton.Click += new System.EventHandler(this.picOpcButton_Click);
             // 
             // label9
