@@ -43,7 +43,7 @@ Nícolas Kamke Schimidt
 - www.linkedin.com/in/nschimidt
 
 Hugo Cesar Da Silva Freitas
-- https://www.linkedin.com/in/hugo-cesar-da-silva-freitas-7b7b04191/
+- www.linkedin.com/in/hugo-cesar-da-silva-freitas-7b7b04191/
 
 
 
